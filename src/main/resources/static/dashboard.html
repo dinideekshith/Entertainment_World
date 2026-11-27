@@ -3,27 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recruiter Dashboard — Entertainment World</title>
+  <title>Casting Company Dashboard — Entertainment World</title>
   <link rel="stylesheet" href="/css/ew-theme.css">
   <style>
     .dash-shell {
       display: grid;
-      grid-template-columns: 1fr 270px;
+      grid-template-columns: 268px 1fr;
       gap: 24px;
-      max-width: 1380px;
-      margin: 24px auto 60px;
+      max-width: 1440px;
+      margin: 22px auto 64px;
       padding: 0 22px;
       align-items: start;
     }
     .dash-main { min-width: 0; }
     .dash-sidebar {
       position: sticky;
-      top: 90px;
+      top: 86px;
       background: #FFFFFF;
       border: 1px solid var(--border-light);
       border-radius: 20px;
       padding: 14px;
       box-shadow: var(--shadow-sm);
+    }
+    .side-group {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 10px 12px 6px;
     }
     .side-link {
       width: 100%;
@@ -31,27 +39,67 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      padding: 11px 14px;
+      padding: 10px 13px;
       border-radius: 12px;
       border: none;
       background: transparent;
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       color: var(--text-body);
       cursor: pointer;
       text-align: left;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
+      transition: background 0.14s ease, color 0.14s ease;
     }
     .side-link:hover { background: var(--bg-ivory); color: var(--text-dark); }
     .side-link.active { background: var(--crimson-soft); color: var(--crimson-dark); font-weight: 800; }
 
-    /* Profile Card & Blue Tick */
+    /* Overview KPI Cards */
+    .kpi-grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .kpi-tile {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+    .kpi-tile:hover { transform: translateY(-2px); border-color: var(--crimson); }
+    .kpi-val { font-size: 1.7rem; font-weight: 900; color: var(--bg-obsidian); line-height: 1.1; margin: 6px 0 4px; }
+    .kpi-lbl { font-size: 0.74rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+    /* Charts & Analytics */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 0.9fr;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+    .chart-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; font-size: 0.82rem; }
+    .bar-lbl { width: 104px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-track { flex: 1; height: 10px; background: #EFECE5; border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; background: var(--crimson); }
+
+    /* Profile Hero */
     .profile-hero {
       background: #FFFFFF;
       border: 1px solid var(--border-light);
       border-radius: 20px;
-      padding: 26px;
+      padding: 24px;
       display: flex;
       justify-content: space-between;
       gap: 20px;
@@ -60,8 +108,8 @@
       box-shadow: var(--shadow-sm);
     }
     .profile-logo {
-      width: 104px;
-      height: 104px;
+      width: 96px;
+      height: 96px;
       border-radius: 18px;
       object-fit: cover;
       border: 1px solid var(--border-light);
@@ -101,6 +149,17 @@
       accent-color: var(--crimson);
       cursor: pointer;
     }
+    .verified-pill {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(19, 154, 104, 0.94);
+      color: #FFFFFF;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
     .showcase-ribbon {
       position: absolute;
       bottom: 8px;
@@ -131,6 +190,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 4px;
       padding-top: 8px;
       margin-top: auto;
       border-top: 1px solid var(--border-light);
@@ -139,14 +199,14 @@
       border: 1px solid var(--border-light);
       background: var(--bg-ivory);
       border-radius: 8px;
-      padding: 5px 9px;
+      padding: 5px 8px;
       cursor: pointer;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
     }
     .icon-btn.active { background: var(--crimson-soft); border-color: var(--crimson); color: var(--crimson); }
 
-    /* Split layout for Search, My Artists, View Applications */
+    /* Split layout */
     .split-2 {
       display: grid;
       grid-template-columns: 280px 1fr;
@@ -171,6 +231,43 @@
     }
     .folder-item.active { background: var(--crimson-soft); color: var(--crimson-dark); font-weight: 800; }
 
+    /* Data Tables */
+    .ew-table-wrap {
+      background: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 18px;
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+    table.ew-tbl { width: 100%; border-collapse: collapse; min-width: 720px; }
+    table.ew-tbl th, table.ew-tbl td {
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--border-light);
+      text-align: left;
+      font-size: 0.86rem;
+      vertical-align: middle;
+    }
+    table.ew-tbl th {
+      background: var(--bg-ivory);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      font-weight: 800;
+    }
+
+    /* Loading Spinner */
+    .ew-loader {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--border-light);
+      border-top-color: var(--crimson);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     /* Notifications Dropdown */
     .notif-wrap { position: relative; }
     .notif-panel {
@@ -178,7 +275,7 @@
       position: absolute;
       right: 0;
       top: 46px;
-      width: 340px;
+      width: 350px;
       background: #FFFFFF;
       color: var(--text-dark);
       border: 1px solid var(--border-light);
@@ -186,7 +283,7 @@
       box-shadow: var(--shadow-lg);
       padding: 14px;
       z-index: 150;
-      max-height: 380px;
+      max-height: 400px;
       overflow-y: auto;
     }
     .notif-panel.open { display: block; }
@@ -205,43 +302,51 @@
       border-radius: 999px;
       transition: width 0.35s ease;
     }
+    .mobile-menu-btn { display: none; }
 
-    @media (max-width: 1180px) {
+    @media (max-width: 1260px) {
+      .kpi-grid-6 { grid-template-columns: repeat(3, 1fr); }
+      .charts-row { grid-template-columns: 1fr; }
       .artists-grid { grid-template-columns: repeat(3, 1fr); }
     }
     @media (max-width: 980px) {
+      .mobile-menu-btn { display: inline-flex; }
       .dash-shell { grid-template-columns: 1fr; }
-      .dash-sidebar { position: static; order: -1; display: flex; flex-wrap: wrap; gap: 6px; }
-      .side-link { width: auto; }
+      .dash-sidebar { position: static; display: none; }
+      .dash-sidebar.mobile-open { display: block; }
       .split-2 { grid-template-columns: 1fr; }
       .artists-grid { grid-template-columns: repeat(2, 1fr); }
+      .kpi-grid-6 { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
   <header class="ew-navbar">
-    <div class="container ew-navbar-inner" style="max-width:1380px;">
-      <a href="/" class="ew-brand">
-        <div class="ew-brand-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#E5A93C"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <div>
-          <div class="ew-brand-title">Entertainment World</div>
-          <div class="ew-brand-sub">Casting Recruiter Dashboard</div>
-        </div>
-      </a>
+    <div class="container ew-navbar-inner" style="max-width:1440px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button type="button" class="btn btn-outline-light btn-sm mobile-menu-btn" onclick="document.getElementById('dash-sidebar').classList.toggle('mobile-open')">☰ Menu</button>
+        <a href="/" class="ew-brand">
+          <div class="ew-brand-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#E5A93C"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div>
+            <div class="ew-brand-title">Entertainment World</div>
+            <div class="ew-brand-sub">Casting Company Studio</div>
+          </div>
+        </a>
+      </div>
 
       <nav class="ew-nav-links">
+        <a href="#" onclick="switchSection('dashboard'); return false;">Overview</a>
         <a href="#" onclick="switchSection('projects'); return false;">Projects</a>
-        <a href="#" onclick="switchSection('search'); return false;">Hire Artists</a>
-        <a href="#" onclick="switchSection('package'); return false;">Recruiter Packages</a>
-        <a href="#" onclick="switchSection('recommended'); return false;">Recommended</a>
-        <a href="#" onclick="switchSection('transactions'); return false;">Transactions</a>
+        <a href="#" onclick="switchSection('auditions'); return false;">Auditions</a>
+        <a href="#" onclick="switchSection('search'); return false;">Actors</a>
+        <a href="#" onclick="switchSection('reports'); return false;">Reports</a>
       </nav>
 
       <div class="ew-nav-actions">
         <div class="notif-wrap">
-          <button type="button" onclick="toggleNotifications()" class="btn btn-outline-light btn-sm">
+          <button type="button" onclick="toggleNotifications()" class="btn btn-outline-light btn-sm" title="Notifications">
             🔔 <span id="notif-badge" class="badge badge-showcase" style="padding:1px 6px;">0</span>
           </button>
           <div id="notif-panel" class="notif-panel"></div>
@@ -253,28 +358,42 @@
   </header>
 
   <div class="dash-shell">
-    <main class="dash-main" id="dash-view">
-      <div class="card" style="padding:42px; text-align:center;">Loading Entertainment World Recruiter Dashboard...</div>
-    </main>
+    <aside id="dash-sidebar" class="dash-sidebar">
+      <div class="side-group">Overview</div>
+      <button class="side-link active" data-sec="dashboard" onclick="switchSection('dashboard')">🏠 Dashboard Overview</button>
 
-    <aside class="dash-sidebar">
-      <button class="side-link active" data-sec="dashboard" onclick="switchSection('dashboard')">🏠 Dashboard</button>
+      <div class="side-group">Talent &amp; Casting</div>
+      <button class="side-link" data-sec="search" onclick="switchSection('search')">🔎 Actor Management</button>
       <button class="side-link" data-sec="post-project" onclick="switchSection('post-project')">➕ Post Project</button>
       <button class="side-link" data-sec="projects" onclick="switchSection('projects')">
-        <span>💼 Projects</span><span class="badge badge-rejected" style="font-size:0.62rem;">New</span>
+        <span>💼 Casting Projects</span><span class="badge badge-rejected" style="font-size:0.62rem;">Manage</span>
       </button>
-      <button class="side-link" data-sec="applications" onclick="switchSection('applications')">📥 View Applications</button>
-      <button class="side-link" data-sec="my-artists" onclick="switchSection('my-artists')">❤️ My Artists</button>
-      <button class="side-link" data-sec="search" onclick="switchSection('search')">🔎 Search Artists</button>
-      <button class="side-link" data-sec="recommended" onclick="switchSection('recommended')">👍 Recommended Artists</button>
-      <button class="side-link" data-sec="package" onclick="switchSection('package')">🎟️ Get Package</button>
+      <button class="side-link" data-sec="applications" onclick="switchSection('applications')">📥 Applications</button>
+      <button class="side-link" data-sec="auditions" onclick="switchSection('auditions')">🎬 Auditions</button>
+      <button class="side-link" data-sec="selection" onclick="switchSection('selection')">⭐ Shortlist &amp; Selection</button>
+      <button class="side-link" data-sec="my-artists" onclick="switchSection('my-artists')">❤️ My Artists Folders</button>
+      <button class="side-link" data-sec="recommended" onclick="switchSection('recommended')">🤖 AI Recommendations</button>
+
+      <div class="side-group">Operations &amp; Insights</div>
+      <button class="side-link" data-sec="messages" onclick="switchSection('messages')">💬 Messages &amp; Alerts</button>
+      <button class="side-link" data-sec="reports" onclick="switchSection('reports')">📊 Reports &amp; Analytics</button>
+      <button class="side-link" data-sec="team" onclick="switchSection('team')">👥 Team Management</button>
+      <button class="side-link" data-sec="contracts" onclick="switchSection('contracts')">📄 Contracts &amp; Expenses</button>
+      <button class="side-link" data-sec="package" onclick="switchSection('package')">🎟️ Subscription Passes</button>
       <button class="side-link" data-sec="transactions" onclick="switchSection('transactions')">🧾 Transaction History</button>
     </aside>
+
+    <main class="dash-main" id="dash-view">
+      <div class="card" style="padding:48px; text-align:center;">
+        <div class="ew-loader" style="margin-bottom:12px;"></div>
+        <div style="font-weight:700;">Loading Entertainment World Casting Company Dashboard...</div>
+      </div>
+    </main>
   </div>
 
-  <!-- Artist Portfolio / Audition / Contact Modal -->
+  <!-- Artist Portfolio / Audition / Verify Modal -->
   <div id="artist-modal" class="modal-backdrop">
-    <div class="modal-box" style="max-width:740px;">
+    <div class="modal-box" style="max-width:780px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
         <h3 id="am-title">Artist Portfolio</h3>
         <button type="button" onclick="closeArtistModal()" class="btn btn-outline-dark btn-sm">✕</button>
@@ -324,6 +443,148 @@
     </div>
   </div>
 
+  <!-- Edit Casting Project Modal -->
+  <div id="edit-project-modal" class="modal-backdrop">
+    <div class="modal-box" style="max-width:740px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3>Edit Casting Project</h3>
+        <button type="button" onclick="closeModal('edit-project-modal')" class="btn btn-outline-dark btn-sm">✕</button>
+      </div>
+      <form id="edit-project-form">
+        <input type="hidden" id="eproj-id">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div style="grid-column:span 2;"><label class="form-label">Project Title</label><input id="eproj-title" class="form-control" required></div>
+          <div><label class="form-label">Project Type</label><input id="eproj-type" class="form-control" required></div>
+          <div><label class="form-label">Language</label><input id="eproj-lang" class="form-control"></div>
+          <div><label class="form-label">Required Talent</label><input id="eproj-cat" class="form-control" required></div>
+          <div><label class="form-label">Project Stage</label>
+            <select id="eproj-stage" class="form-select"><option>Pre-production</option><option>Casting Open</option><option>Shooting Started</option></select>
+          </div>
+          <div><label class="form-label">Shooting Location</label><input id="eproj-loc" class="form-control"></div>
+          <div><label class="form-label">Budget / Compensation</label><input id="eproj-budget" class="form-control"></div>
+          <div><label class="form-label">Age Min</label><input id="eproj-agemin" type="number" class="form-control"></div>
+          <div><label class="form-label">Age Max</label><input id="eproj-agemax" type="number" class="form-control"></div>
+          <div><label class="form-label">Audition Date</label><input id="eproj-auddate" type="date" class="form-control"></div>
+          <div><label class="form-label">Last Date to Apply</label><input id="eproj-lastdate" type="date" class="form-control"></div>
+          <div style="grid-column:span 2;"><label class="form-label">Project Description</label><textarea id="eproj-desc" class="form-textarea" required></textarea></div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+          <button type="submit" class="btn btn-primary">Save Project Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Application Review & Comment Modal -->
+  <div id="app-review-modal" class="modal-backdrop">
+    <div class="modal-box" style="max-width:520px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 id="ar-title">Review Application</h3>
+        <button type="button" onclick="closeModal('app-review-modal')" class="btn btn-outline-dark btn-sm">✕</button>
+      </div>
+      <form id="app-review-form">
+        <input type="hidden" id="ar-app-id">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <label class="form-label">Decision / Status</label>
+            <select id="ar-status" class="form-select">
+              <option value="APPLIED">Applied</option>
+              <option value="SHORTLISTED">Shortlisted</option>
+              <option value="INVITED">Invited</option>
+              <option value="SELECTED">Selected (Accepted)</option>
+              <option value="BACKUP">Backup Candidate</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Rating (1–5)</label>
+            <select id="ar-rating" class="form-select">
+              <option value="5">★★★★★ (5)</option>
+              <option value="4">★★★★☆ (4)</option>
+              <option value="3">★★★☆☆ (3)</option>
+              <option value="2">★★☆☆☆ (2)</option>
+              <option value="1">★☆☆☆☆ (1)</option>
+            </select>
+          </div>
+          <div style="grid-column:span 2;">
+            <label class="form-label">Assigned Character / Role</label>
+            <input id="ar-role" class="form-control" placeholder="e.g. Lead Hero / Supporting Detective">
+          </div>
+          <div style="grid-column:span 2;">
+            <label class="form-label">Internal Comments</label>
+            <textarea id="ar-comment" class="form-textarea" placeholder="Director notes, screen-test feedback, callback observations..."></textarea>
+          </div>
+          <div style="grid-column:span 2;">
+            <label style="display:flex; align-items:center; gap:8px; font-size:0.86rem; font-weight:700;">
+              <input type="checkbox" id="ar-notify" checked> Send selection / rejection notification to actor
+            </label>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+          <button type="submit" class="btn btn-primary">Save Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Schedule / Update Audition Modal -->
+  <div id="audition-modal" class="modal-backdrop">
+    <div class="modal-box" style="max-width:560px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 id="aud-modal-title">Schedule Audition</h3>
+        <button type="button" onclick="closeModal('audition-modal')" class="btn btn-outline-dark btn-sm">✕</button>
+      </div>
+      <form id="audition-form">
+        <input type="hidden" id="aud-id">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <label class="form-label">Casting Project</label>
+            <select id="aud-project" class="form-select" required></select>
+          </div>
+          <div>
+            <label class="form-label">Actor / Artist</label>
+            <select id="aud-artist" class="form-select" required></select>
+          </div>
+          <div>
+            <label class="form-label">Audition Type</label>
+            <select id="aud-type" class="form-select">
+              <option value="Online">Online</option>
+              <option value="Offline">Offline</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Date</label>
+            <input type="date" id="aud-date" class="form-control" required>
+          </div>
+          <div>
+            <label class="form-label">Time</label>
+            <input type="time" id="aud-time" class="form-control" value="11:00" required>
+          </div>
+          <div>
+            <label class="form-label">Status</label>
+            <select id="aud-status" class="form-select">
+              <option value="SCHEDULED">Scheduled</option>
+              <option value="RESCHEDULED">Rescheduled</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
+          </div>
+          <div style="grid-column:span 2;">
+            <label class="form-label">Location or Video Meeting Link</label>
+            <input id="aud-loc" class="form-control" required placeholder="Studio address or online audition room link">
+          </div>
+          <div style="grid-column:span 2;">
+            <label class="form-label">Audition Notes / Feedback</label>
+            <textarea id="aud-notes" class="form-textarea" placeholder="Scene prompt, feedback, or call instructions..."></textarea>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+          <button type="submit" class="btn btn-primary">Save Audition &amp; Send Invite</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Tag Artists to Folder Modal -->
   <div id="tag-folder-modal" class="modal-backdrop">
     <div class="modal-box" style="max-width:440px;">
@@ -357,6 +618,7 @@
   </div>
 
   <script src="/js/ew-core.js"></script>
+  <script src="/js/ew-dashboard-ops.js"></script>
   <script src="/js/ew-dashboard.js"></script>
 </body>
 </html>

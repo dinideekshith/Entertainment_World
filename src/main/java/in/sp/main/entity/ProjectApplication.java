@@ -35,6 +35,24 @@ public class ProjectApplication {
     @Column(nullable = false)
     private LocalDateTime appliedAt = LocalDateTime.now();
 
+    private Integer rating; // 1-5 internal casting rating
+
+    @Column(columnDefinition = "TEXT")
+    private String internalComment;
+
+    @Column(length = 140)
+    private String assignedRole;
+
+    @Column(nullable = false)
+    private boolean backupCandidate = false;
+
+    private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @PreUpdate
+    public void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -58,4 +76,19 @@ public class ProjectApplication {
 
     public LocalDateTime getAppliedAt() { return appliedAt; }
     public void setAppliedAt(LocalDateTime appliedAt) { this.appliedAt = appliedAt; }
+
+    public Integer getRating() { return rating; }
+    public void setRating(Integer rating) { this.rating = rating; }
+
+    public String getInternalComment() { return internalComment; }
+    public void setInternalComment(String internalComment) { this.internalComment = internalComment; }
+
+    public String getAssignedRole() { return assignedRole; }
+    public void setAssignedRole(String assignedRole) { this.assignedRole = assignedRole; }
+
+    public boolean isBackupCandidate() { return backupCandidate; }
+    public void setBackupCandidate(boolean backupCandidate) { this.backupCandidate = backupCandidate; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

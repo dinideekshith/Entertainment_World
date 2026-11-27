@@ -27,6 +27,11 @@ public class DataSeedService implements CommandLineRunner {
     private final ArtistFolderItemRepository folderItemRepo;
     private final SubscriptionPaymentRepository paymentRepo;
     private final ContactPortfolioHistoryRepository historyRepo;
+    private final AuditionScheduleRepository auditionRepo;
+    private final CommunicationMessageRepository messageRepo;
+    private final TeamMemberRepository teamRepo;
+    private final ArtistContractRepository contractRepo;
+    private final ProductionExpenseRepository expenseRepo;
     private final NotificationService notificationService;
     private final PasswordService passwordService;
 
@@ -40,6 +45,11 @@ public class DataSeedService implements CommandLineRunner {
                            ArtistFolderItemRepository folderItemRepo,
                            SubscriptionPaymentRepository paymentRepo,
                            ContactPortfolioHistoryRepository historyRepo,
+                           AuditionScheduleRepository auditionRepo,
+                           CommunicationMessageRepository messageRepo,
+                           TeamMemberRepository teamRepo,
+                           ArtistContractRepository contractRepo,
+                           ProductionExpenseRepository expenseRepo,
                            NotificationService notificationService,
                            PasswordService passwordService) {
         this.adminRepo = adminRepo;
@@ -52,6 +62,11 @@ public class DataSeedService implements CommandLineRunner {
         this.folderItemRepo = folderItemRepo;
         this.paymentRepo = paymentRepo;
         this.historyRepo = historyRepo;
+        this.auditionRepo = auditionRepo;
+        this.messageRepo = messageRepo;
+        this.teamRepo = teamRepo;
+        this.contractRepo = contractRepo;
+        this.expenseRepo = expenseRepo;
         this.notificationService = notificationService;
         this.passwordService = passwordService;
     }
@@ -62,6 +77,7 @@ public class DataSeedService implements CommandLineRunner {
         seedPasses();
         List<ArtistProfile> artists = seedArtists();
         seedDemoCompanies(artists);
+        seedCastingOperations(artists);
     }
 
     private void seedSuperAdmin() {
@@ -357,22 +373,57 @@ public class DataSeedService implements CommandLineRunner {
             folderItemRepo.save(item);
         }
 
-        // Seed 3 Casting Projects & Applications
+        // Seed Casting Projects & Applications
         CastingProject prj1 = new CastingProject();
         prj1.setCompanyId(active.getId());
         prj1.setProjectTitle("Seeking Voice-Over Artist for Brand Promo Film");
-        prj1.setProjectType("Casting Call");
+        prj1.setProjectType("Advertisement");
+        prj1.setProductionHouseName("Moonlight Pictures Banner");
+        prj1.setCastingCompanyName(active.getCompanyName());
+        prj1.setProjectLanguage("English, Hindi");
+        prj1.setProjectStage("Casting Open");
         prj1.setTargetCategory("Voice-over Artist");
         prj1.setTargetGender("Female");
         prj1.setAgeMin(20);
         prj1.setAgeMax(38);
+        prj1.setPreferredAppearance("Voice-only (clear diction)");
+        prj1.setExperienceLevel("Experienced");
+        prj1.setArtistsRequiredCount(2);
+        prj1.setRoleDescription("Lead narrator with warm conversational tone for luxury travel campaign.");
         prj1.setProjectDetails("We are seeking a warm, articulate bilingual voice-over artist to narrate a 90-second luxury travel campaign film.");
         prj1.setTags("voice-over, narration, commercial, english, hindi");
         prj1.setDurationType("Date-specific");
+        prj1.setAuditionLocation("Online Self-Tape Studio");
+        prj1.setAuditionDate(LocalDate.now().plusDays(5));
+        prj1.setAuditionType("Online");
+        prj1.setShootingStartDate(LocalDate.now().plusDays(12));
+        prj1.setShootingDuration("3 Days");
+        prj1.setAvailabilityRequirements("Flexible 4-hour studio slot");
+        prj1.setPaymentType("Paid");
         prj1.setBudget("Rs. 45,000");
+        prj1.setPaymentBasis("Per project");
+        prj1.setAccommodationProvided("No");
+        prj1.setFoodProvided("Yes");
+        prj1.setTravelExpensesCovered("Yes");
         prj1.setLocation("Mumbai");
+        prj1.setAuditionProcess("Round 1: Voice sample review · Round 2: Live studio voice check");
+        prj1.setAuditionInstructions("Record in a quiet room without background music or echo.");
+        prj1.setSelfIntroVideoRequired("Yes");
+        prj1.setPortfolioRequired("Yes");
         prj1.setOnlineAuditionEnabled(true);
         prj1.setAuditionScript("Welcome to the horizon where stillness speaks louder than speed. Read with warm measured pacing.");
+        prj1.setLastDateToApply(LocalDate.now().plusDays(26));
+        prj1.setRequiredPhotographs("2 Studio Headshots");
+        prj1.setIntroVideoRequirement("30-second intro slate");
+        prj1.setActingPortfolioRequirement("Commercial voice reel");
+        prj1.setPreviousWorkLinksReq("YouTube or Drive reel link");
+        prj1.setApplicantContactReq("Phone, WhatsApp & Email");
+        prj1.setCastingDirectorName(active.getRepresentativeName());
+        prj1.setContactEmail(active.getCompanyEmail());
+        prj1.setContactNumber(active.getContactNumber());
+        prj1.setWhatsappNumber(active.getContactNumber());
+        prj1.setWebsiteOrSocialLinks(active.getWebsite());
+        prj1.setProjectPosterPath("/assets/images/hero-spotlight.jpg");
         prj1.setPromoted(true);
         prj1.setPostedDate(LocalDate.now().minusDays(4));
         prj1.setExpiryDate(LocalDate.now().plusDays(26));
@@ -381,18 +432,56 @@ public class DataSeedService implements CommandLineRunner {
         CastingProject prj2 = new CastingProject();
         prj2.setCompanyId(active.getId());
         prj2.setProjectTitle("Lead Actors for Monsoon Noir Web Series");
-        prj2.setProjectType("Audition");
+        prj2.setProjectType("Web Series");
+        prj2.setProductionHouseName("Moonlight Originals");
+        prj2.setCastingCompanyName(active.getCompanyName());
+        prj2.setProjectLanguage("Hindi");
+        prj2.setProjectStage("Pre-production");
         prj2.setTargetCategory("Actor");
-        prj2.setTargetGender("All");
+        prj2.setTargetGender("Any");
         prj2.setAgeMin(22);
         prj2.setAgeMax(35);
+        prj2.setHeightRequirement("5'5\" - 6'1\"");
+        prj2.setPreferredAppearance("Intense expressive eyes, urban silhouette");
+        prj2.setExperienceLevel("Both");
+        prj2.setArtistsRequiredCount(2);
+        prj2.setRoleDescription("Two sharp investigative leads navigating Mumbai monsoon nights.");
+        prj2.setCharacterName("Detective Kabir / Meera");
         prj2.setProjectDetails("Casting two charismatic leads for an 8-episode mystery thriller shooting in Mumbai and Pune.");
         prj2.setTags("ott, thriller, lead actor, drama");
         prj2.setDurationType("Full-Time");
-        prj2.setBudget("Rs. 1,80,000 / episode");
+        prj2.setAuditionLocation("Goregaon Studio / Online");
+        prj2.setAuditionDate(LocalDate.now().plusDays(7));
+        prj2.setAuditionType("Online");
+        prj2.setShootingStartDate(LocalDate.now().plusDays(25));
+        prj2.setShootingEndDate(LocalDate.now().plusDays(70));
+        prj2.setShootingDuration("45 Days");
+        prj2.setAvailabilityRequirements("Continuous 45-day schedule availability");
+        prj2.setPaymentType("Paid");
+        prj2.setBudget("Rs. 1,80,000");
+        prj2.setPaymentBasis("Per episode");
+        prj2.setAccommodationProvided("Yes");
+        prj2.setFoodProvided("Yes");
+        prj2.setTravelExpensesCovered("Yes");
         prj2.setLocation("Mumbai");
+        prj2.setAuditionProcess("Self-tape submission followed by in-person chemistry read");
+        prj2.setAuditionInstructions("Naturalistic performance; avoid theatrical projection.");
+        prj2.setSelfIntroVideoRequired("Yes");
+        prj2.setPortfolioRequired("Yes");
         prj2.setOnlineAuditionEnabled(true);
         prj2.setAuditionScript("INT. METRO PLATFORM - NIGHT. Detective Kabir lowers his umbrella and speaks softly into the recorder.");
+        prj2.setLastDateToApply(LocalDate.now().plusDays(28));
+        prj2.setRequiredPhotographs("3 Unedited Portraits (Front, Left, Right)");
+        prj2.setIntroVideoRequirement("45-second intro stating height, city & theatre credits");
+        prj2.setActingPortfolioRequirement("Dramatic showreel");
+        prj2.setPreviousWorkLinksReq("IMDb / Showreel links");
+        prj2.setApplicantContactReq("Phone & Email");
+        prj2.setCastingDirectorName(active.getRepresentativeName());
+        prj2.setContactEmail(active.getCompanyEmail());
+        prj2.setContactNumber(active.getContactNumber());
+        prj2.setWhatsappNumber(active.getContactNumber());
+        prj2.setWebsiteOrSocialLinks(active.getWebsite());
+        prj2.setProjectPosterPath("/assets/images/cat-actor.jpg");
         prj2.setPostedDate(LocalDate.now().minusDays(2));
         prj2.setExpiryDate(LocalDate.now().plusDays(28));
         projectRepo.save(prj2);
@@ -450,5 +539,190 @@ public class DataSeedService implements CommandLineRunner {
             f.setFolderName(name);
             return folderRepo.save(f);
         }).toList();
+    }
+
+    private void seedCastingOperations(List<ArtistProfile> artists) {
+        // Ensure skills & verification metadata exist on existing artists cleanly
+        boolean anyArtistUpdated = false;
+        for (int i = 0; i < artists.size(); i++) {
+            ArtistProfile a = artists.get(i);
+            if (a.getSkills() == null || a.getSkills().isBlank()) {
+                a.setSkills(a.getCategory() + ", " + (a.getKeywords() != null ? a.getKeywords() : "Acting"));
+                if (i < 8) {
+                    a.setProfileVerified(true);
+                    a.setVerificationStatus("Verified");
+                    a.setVerificationNotes("Identity and showreel authenticated");
+                }
+                anyArtistUpdated = true;
+            }
+        }
+        if (anyArtistUpdated) {
+            artistRepo.saveAll(artists);
+        }
+
+        CastingCompany studio = companyRepo.findByCompanyEmailIgnoreCase("studio@moonlightcinema.in").orElse(null);
+        if (studio == null || artists.isEmpty()) return;
+        List<CastingProject> studioProjects = projectRepo.findByCompanyIdOrderByPostedDateDescIdDesc(studio.getId());
+        if (studioProjects.isEmpty()) return;
+        CastingProject p1 = studioProjects.get(0);
+        CastingProject p2 = studioProjects.size() > 1 ? studioProjects.get(1) : p1;
+
+        // Enrich sample applications with SELECTED / BACKUP / ratings if none exist yet
+        List<ProjectApplication> existingApps = appRepo.findAll();
+        boolean hasSelected = existingApps.stream().anyMatch(pa -> "SELECTED".equalsIgnoreCase(pa.getStatus()));
+        if (!hasSelected && !existingApps.isEmpty()) {
+            for (int i = 0; i < existingApps.size(); i++) {
+                ProjectApplication pa = existingApps.get(i);
+                if (i == 0) {
+                    pa.setStatus("SELECTED");
+                    pa.setRating(5);
+                    pa.setAssignedRole("Lead Role");
+                    pa.setInternalComment("Outstanding dramatic presence and camera command.");
+                } else if (i == 1) {
+                    pa.setStatus("BACKUP");
+                    pa.setBackupCandidate(true);
+                    pa.setRating(4);
+                    pa.setAssignedRole("Lead Role (Backup)");
+                    pa.setInternalComment("Strong screen test; keep on priority backup list.");
+                } else if (i == 2) {
+                    pa.setStatus("SHORTLISTED");
+                    pa.setRating(4);
+                    pa.setInternalComment("Clear voice modulation and bilingual fluency.");
+                }
+            }
+            appRepo.saveAll(existingApps);
+        }
+
+        if (auditionRepo.count() == 0) {
+            AuditionSchedule a1 = new AuditionSchedule();
+            a1.setCompanyId(studio.getId());
+            a1.setProjectId(p1.getId());
+            a1.setArtistId(artists.get(0).getId());
+            a1.setAuditionType("Online");
+            a1.setScheduledDate(LocalDate.now().plusDays(2));
+            a1.setScheduledTime("11:30");
+            a1.setLocationOrLink("https://meet.entertainmentworld.in/room/ew-101");
+            a1.setStatus("SCHEDULED");
+            a1.setAuditionVideoUrl("/assets/video/audition-1.mp4");
+            a1.setNotes("Scene 14 dramatic monologue test");
+
+            AuditionSchedule a2 = new AuditionSchedule();
+            a2.setCompanyId(studio.getId());
+            a2.setProjectId(p2.getId());
+            a2.setArtistId(artists.get(3).getId());
+            a2.setAuditionType("Offline");
+            a2.setScheduledDate(LocalDate.now().plusDays(4));
+            a2.setScheduledTime("15:00");
+            a2.setLocationOrLink("Studio 4, Goregaon Film City Annex, Mumbai");
+            a2.setStatus("SCHEDULED");
+            a2.setAuditionVideoUrl("/assets/video/audition-2.mp4");
+            a2.setNotes("Voice booth + commercial look test");
+
+            AuditionSchedule a3 = new AuditionSchedule();
+            a3.setCompanyId(studio.getId());
+            a3.setProjectId(p1.getId());
+            a3.setArtistId(artists.get(1).getId());
+            a3.setAuditionType("Online");
+            a3.setScheduledDate(LocalDate.now().minusDays(1));
+            a3.setScheduledTime("16:00");
+            a3.setLocationOrLink("https://meet.entertainmentworld.in/room/ew-098");
+            a3.setStatus("COMPLETED");
+            a3.setAuditionVideoUrl("/assets/video/audition-3.mp4");
+            a3.setRating(5);
+            a3.setFeedback("Expressive delivery, natural pacing, strong look match.");
+            auditionRepo.saveAll(List.of(a1, a2, a3));
+        }
+
+        if (messageRepo.count() == 0) {
+            CommunicationMessage m1 = new CommunicationMessage();
+            m1.setCompanyId(studio.getId());
+            m1.setArtistId(artists.get(0).getId());
+            m1.setProjectId(p1.getId());
+            m1.setMessageType("AUDITION_INVITE");
+            m1.setSubject("Audition Invite: " + p1.getProjectTitle());
+            m1.setBody("We loved your dramatic showreel. Please join our online audition slot scheduled in 2 days.");
+
+            CommunicationMessage m2 = new CommunicationMessage();
+            m2.setCompanyId(studio.getId());
+            m2.setArtistId(artists.get(1).getId());
+            m2.setProjectId(p1.getId());
+            m2.setMessageType("SELECTION_NOTICE");
+            m2.setSubject("Congratulations — Selected for Callback");
+            m2.setBody("You have been shortlisted for the lead look test. Our coordinator will share your call sheet.");
+            messageRepo.saveAll(List.of(m1, m2));
+        }
+
+        if (teamRepo.count() == 0) {
+            TeamMember t1 = new TeamMember();
+            t1.setCompanyId(studio.getId());
+            t1.setFullName("Tess Kapoor");
+            t1.setEmail(studio.getCompanyEmail());
+            t1.setPhone(studio.getContactNumber());
+            t1.setRoleTitle("Casting Director");
+            t1.setPermissions("Manage Projects,Verify Actors,Schedule Auditions,Approve Selections,View Reports,Manage Contracts");
+            t1.setAssignedProjectIds(p1.getId() + "," + p2.getId());
+            t1.setStatus("ACTIVE");
+
+            TeamMember t2 = new TeamMember();
+            t2.setCompanyId(studio.getId());
+            t2.setFullName("Siddhant Rao");
+            t2.setEmail("siddhant.coord@moonlightcinema.in");
+            t2.setPhone("+91 98209 55112");
+            t2.setRoleTitle("Casting Assistant");
+            t2.setPermissions("Verify Actors,Schedule Auditions,View Reports");
+            t2.setAssignedProjectIds(String.valueOf(p1.getId()));
+            t2.setStatus("ACTIVE");
+
+            TeamMember t3 = new TeamMember();
+            t3.setCompanyId(studio.getId());
+            t3.setFullName("Neha Kulkarni");
+            t3.setEmail("neha.talent@moonlightcinema.in");
+            t3.setPhone("+91 98209 55119");
+            t3.setRoleTitle("Talent Coordinator");
+            t3.setPermissions("Schedule Auditions,Manage Contracts");
+            t3.setAssignedProjectIds(String.valueOf(p2.getId()));
+            t3.setStatus("ACTIVE");
+            teamRepo.saveAll(List.of(t1, t2, t3));
+        }
+
+        if (contractRepo.count() == 0) {
+            ArtistContract c1 = new ArtistContract();
+            c1.setCompanyId(studio.getId());
+            c1.setProjectId(p1.getId());
+            c1.setArtistId(artists.get(0).getId());
+            c1.setContractTitle("Lead Performer Agreement — Monsoon Noir");
+            c1.setRoleName("Detective Kabir");
+            c1.setCompensationInr(new BigDecimal("180000.00"));
+            c1.setPaymentBasis("Per episode");
+            c1.setContractStatus("SIGNED");
+            c1.setDocumentVerificationStatus("VERIFIED");
+            c1.setStartDate(LocalDate.now().plusDays(15));
+            c1.setEndDate(LocalDate.now().plusDays(60));
+            c1.setNotes("PAN, Aadhaar, and artist guild release verified.");
+            contractRepo.save(c1);
+        }
+
+        if (expenseRepo.count() == 0) {
+            ProductionExpense e1 = new ProductionExpense();
+            e1.setCompanyId(studio.getId());
+            e1.setProjectId(p1.getId());
+            e1.setArtistId(artists.get(0).getId());
+            e1.setCategory("Audition Studio");
+            e1.setDescription("Goregaon Sound & Camera Look Test Booking (2 Days)");
+            e1.setAmountInr(new BigDecimal("24000.00"));
+            e1.setPaymentStatus("PAID");
+            e1.setExpenseDate(LocalDate.now().minusDays(2));
+
+            ProductionExpense e2 = new ProductionExpense();
+            e2.setCompanyId(studio.getId());
+            e2.setProjectId(p2.getId());
+            e2.setArtistId(artists.get(3).getId());
+            e2.setCategory("Artist Fee");
+            e2.setDescription("Voice-Over Promo Advance Retainer");
+            e2.setAmountInr(new BigDecimal("22500.00"));
+            e2.setPaymentStatus("PENDING");
+            e2.setExpenseDate(LocalDate.now());
+            expenseRepo.saveAll(List.of(e1, e2));
+        }
     }
 }
