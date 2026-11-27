@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professionals Login — Entertainment World</title>
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body data-role="ACTOR" data-endpoint="/api/auth/actors" data-mode="professional">
+    <main class="pro-auth-shell">
+        <!-- Left Cinema Showcase Panel (Matches Professional Dashboard) -->
+        <aside class="pro-showcase" aria-label="Professionals portal overview">
+            <div class="pro-showcase-bg" aria-hidden="true"></div>
+            <div class="pro-showcase-inner">
+                <div class="pro-showcase-top">
+                    <a href="/index.html" class="pro-back-pill">&larr; All Modules</a>
+                    <div class="pro-brand-lockup">
+                        <span class="pro-brand-logo" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="#fbbf24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </span>
+                        <div>
+                            <span class="pro-brand-name">Entertainment World</span>
+                            <span class="pro-brand-sub">PROFESSIONAL PORTAL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pro-showcase-copy">
+                    <span class="pro-eyebrow">VERIFIED TALENT &amp; CASTING NETWORK</span>
+                    <h1>Step into your <em>spotlight</em> today.</h1>
+                    <p>Manage auditions, event appearances, brand sponsorships, and verified industry connections in one unified workspace.</p>
+
+                    <div class="pro-highlights">
+                        <div class="pro-highlight-item">
+                            <span class="pro-hl-num">01</span>
+                            <div>
+                                <strong>Audition, Event &amp; Brand Invites</strong>
+                                <span>Confirm casting slots, RSVP to premieres &amp; negotiate brand deals</span>
+                            </div>
+                        </div>
+                        <div class="pro-highlight-item">
+                            <span class="pro-hl-num">02</span>
+                            <div>
+                                <strong>Mutual Network &amp; Direct Chat</strong>
+                                <span>Two-way approved connections with casting directors &amp; producers</span>
+                            </div>
+                        </div>
+                        <div class="pro-highlight-item">
+                            <span class="pro-hl-num">03</span>
+                            <div>
+                                <strong>Showreels, AI Practice &amp; Media Kit</strong>
+                                <span>Showcase your portfolio and track every application in real time</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" id="open-video-tour" class="pro-tour-card">
+                    <img src="/images/tour/tour-step1.jpg" alt="Platform Video Tour preview" class="pro-tour-thumb">
+                    <div class="pro-tour-card-text">
+                        <span class="pro-tour-badge">VIDEO TOUR • 0:28</span>
+                        <strong>Watch Professional Dashboard Tour</strong>
+                        <span>See how Talent &amp; Casting work together</span>
+                    </div>
+                    <span class="pro-tour-play" aria-hidden="true">&#9654;</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Right Auth Card (Warm Cream & Crimson/Gold Theme Matching Professional Dashboard) -->
+        <section class="pro-auth-pane">
+            <section class="auth-card pro-auth-card" aria-labelledby="module-title">
+                <header class="pro-card-header">
+                    <span class="pro-portal-pill">Actor &bull; Actress &bull; Influencer</span>
+                    <h2 id="module-title">Sign in to your workspace</h2>
+                    <p>Access your Professional Dashboard or create a verified talent profile.</p>
+                </header>
+
+            <div class="tab-bar" role="tablist" aria-label="Professionals authentication">
+                <button type="button" id="tab-login" class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-login" data-tab="login">Sign In</button>
+                <button type="button" id="tab-register" class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-register" data-tab="register">Sign Up</button>
+            </div>
+
+            <div id="status-banner" class="status-banner" role="alert" hidden></div>
+
+            <form id="panel-login" class="auth-form" role="tabpanel" aria-labelledby="tab-login" novalidate>
+                <div class="field-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="actor@entertainmentworld.com" autocomplete="email" required>
+                </div>
+                <div class="field-group">
+                    <label for="login-password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password" required>
+                        <button type="button" class="toggle-password" data-target="login-password" aria-label="Show password">Show</button>
+                    </div>
+                </div>
+                <span class="demo-hint">Demo: <code>actor@entertainmentworld.com</code> / <code>actor123</code></span>
+                <button type="submit" class="submit-btn" id="login-submit">Sign In to Dashboard</button>
+                <p class="terms-note">
+                    By signing in, you agree to Entertainment World's
+                    <button type="button" class="terms-link" data-open-terms>Terms &amp; Conditions</button>.
+                </p>
+            </form>
+
+            <form id="panel-register" class="auth-form" role="tabpanel" aria-labelledby="tab-register" hidden novalidate>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label for="register-category">Professional Category</label>
+                        <select id="register-category" required>
+                            <option value="">-- Select Category --</option>
+                            <option value="Actor">Actor</option>
+                            <option value="Actress">Actress</option>
+                            <option value="Influencer">Influencer</option>
+                            <option value="Child Artist">Child Artist</option>
+                            <option value="Model">Model</option>
+                            <option value="Voice Artist / Dubbing">Voice Artist / Dubbing</option>
+                            <option value="Dancer / Choreographer">Dancer / Choreographer</option>
+                            <option value="Singer / Musician">Singer / Musician</option>
+                            <option value="Comedian">Comedian</option>
+                            <option value="Anchor / Host">Anchor / Host</option>
+                            <option value="Stunt Performer">Stunt Performer</option>
+                            <option value="Director / Filmmaker">Director / Filmmaker</option>
+                            <option value="Scriptwriter / Lyricist">Scriptwriter / Lyricist</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label for="register-start-age">Acting Started Age</label>
+                        <input type="number" id="register-start-age" min="1" max="100" placeholder="e.g. 16" required>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label for="register-name">Full / Stage Name</label>
+                    <input type="text" id="register-name" placeholder="Alex Rivera" autocomplete="name" required>
+                </div>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label for="register-dob">Date of Birth</label>
+                        <input type="date" id="register-dob" required>
+                    </div>
+                    <div class="field-group">
+                        <label for="register-gender">Gender</label>
+                        <select id="register-gender" required>
+                            <option value="">-- Select Gender --</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Non-Binary">Non-Binary</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label for="register-experience">Experience Category</label>
+                    <select id="register-experience" required>
+                        <option value="">-- Select Experience Level --</option>
+                        <option value="Fresher (0-1 years)">Fresher (0-1 years)</option>
+                        <option value="Intermediate (1-3 years)">Intermediate (1-3 years)</option>
+                        <option value="Experienced (3-7 years)">Experienced (3-7 years)</option>
+                        <option value="Senior / Veteran (7+ years)">Senior / Veteran (7+ years)</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" placeholder="you@example.com" autocomplete="email" required>
+                </div>
+                <div class="field-row">
+                    <div class="field-group">
+                        <label for="register-phone">Phone Number</label>
+                        <input type="tel" id="register-phone" placeholder="+91 9876543210" required>
+                    </div>
+                    <div class="field-group">
+                        <label for="register-city">City</label>
+                        <input type="text" id="register-city" placeholder="Mumbai" required>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label for="register-photo">Upload Profile Photo (JPG, PNG, WEBP)</label>
+                    <input type="file" id="register-photo" accept=".jpg,.jpeg,.png,.webp" required>
+                    <img id="photo-preview" class="photo-preview" alt="Profile preview" hidden>
+                </div>
+                <div class="field-group">
+                    <label for="register-bio">Portfolio Link / Short Bio</label>
+                    <textarea id="register-bio" rows="2" placeholder="Experience, skills, or portfolio URL"></textarea>
+                </div>
+                <div class="field-group">
+                    <label for="register-password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="register-password" placeholder="Minimum 6 characters" autocomplete="new-password" required>
+                        <button type="button" class="toggle-password" data-target="register-password" aria-label="Show password">Show</button>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label for="register-confirm">Confirm Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="register-confirm" placeholder="Re-enter password" autocomplete="new-password" required>
+                        <button type="button" class="toggle-password" data-target="register-confirm" aria-label="Show password">Show</button>
+                    </div>
+                </div>
+                <div class="terms-row">
+                    <input type="checkbox" id="register-terms" required>
+                    <label for="register-terms">
+                        I agree to the <button type="button" class="terms-link" data-open-terms>Terms &amp; Conditions</button> and confirm that my portfolio details and photo are accurate.
+                    </label>
+                </div>
+                <button type="submit" class="submit-btn" id="register-submit">Create Professional Profile</button>
+            </form>
+            </section>
+        </section>
+    </main>
+
+    <!-- Terms & Conditions Modal -->
+    <div id="terms-modal" class="terms-modal" role="dialog" aria-modal="true" aria-labelledby="terms-modal-title" hidden>
+        <div class="terms-modal-card">
+            <div class="terms-modal-header">
+                <h2 id="terms-modal-title">Professional Portal — Terms &amp; Conditions</h2>
+                <button type="button" id="terms-modal-close" class="terms-modal-close" aria-label="Close Terms and Conditions">&times;</button>
+            </div>
+            <div class="terms-modal-body">
+                <p><strong>1. Profile Authenticity:</strong> Professionals must provide accurate stage/legal names, age, contact details, and genuine portfolio/showreel links and photos.</p>
+                <p><strong>2. Auditions &amp; Conduct:</strong> All interactions with casting directors, production houses, brands, and fellow talent must remain professional and respectful.</p>
+                <p><strong>3. Subscription Plans:</strong> Basic (Free), Premium (₹199/month), and Pro Elite (₹399/month) plans grant corresponding application quotas and visibility perks.</p>
+                <p><strong>4. Privacy &amp; Media Usage:</strong> Uploaded profile photos and showreels are displayed to verified casting partners and network connections on Entertainment World.</p>
+                <p><strong>5. Account Governance:</strong> Entertainment World reserves the right to suspend accounts that submit misleading credentials or violate community guidelines.</p>
+            </div>
+            <button type="button" id="terms-modal-accept" class="submit-btn">I Understand</button>
+        </div>
+    </div>
+
+    <!-- Professional Dashboard Video Tour Modal -->
+    <div id="tour-modal" class="terms-modal" role="dialog" aria-modal="true" aria-labelledby="tour-modal-title" hidden>
+        <div class="terms-modal-card tour-modal-card">
+            <div class="terms-modal-header">
+                <div>
+                    <span class="tour-eyebrow">INTERACTIVE WALKTHROUGH</span>
+                    <h2 id="tour-modal-title">Professional Dashboard Video Tour</h2>
+                </div>
+                <button type="button" id="tour-modal-close" class="terms-modal-close" aria-label="Close Video Tour">&times;</button>
+            </div>
+
+            <div class="tour-player-stage">
+                <div class="tour-stage-top">
+                    <span id="tour-chapter-pill" class="tour-chapter-pill">Chapter 1 of 4</span>
+                    <span id="tour-time-label" class="tour-time-label">00:00 / 00:28</span>
+                </div>
+                <div class="tour-video-wrap">
+                    <canvas id="tour-canvas" width="1280" height="720" hidden></canvas>
+                    <video id="tour-video" class="tour-video" autoplay muted playsinline></video>
+                </div>
+                <div id="tour-progress-track" class="tour-progress-track" title="Click to seek">
+                    <div id="tour-progress-bar" class="tour-progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="tour-controls">
+                    <div class="tour-controls-left">
+                        <button type="button" id="tour-prev-btn" class="tour-ctrl-btn" aria-label="Previous chapter">&larr; Prev</button>
+                        <button type="button" id="tour-play-btn" class="tour-ctrl-btn primary">Pause</button>
+                        <button type="button" id="tour-next-btn" class="tour-ctrl-btn" aria-label="Next chapter">Next &rarr;</button>
+                        <button type="button" id="tour-sound-btn" class="tour-ctrl-btn" aria-label="Toggle voiceover sound" aria-pressed="true">Sound: On</button>
+                        <button type="button" id="tour-fullscreen-btn" class="tour-ctrl-btn" aria-label="Fullscreen video">Fullscreen</button>
+                    </div>
+                    <button type="button" id="tour-try-demo" class="tour-demo-btn">Fill Demo Login &amp; Sign In</button>
+                </div>
+            </div>
+
+            <div id="tour-chapters" class="tour-chapters"></div>
+        </div>
+    </div>
+
+    <script src="/js/module-auth.js"></script>
+</body>
+</html>

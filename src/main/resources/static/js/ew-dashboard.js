@@ -228,42 +228,102 @@
     renderDashboardHome();
   });
 
-  // ================= 2. POST PROJECT (+ ONLINE AUDITION SCRIPT) =================
+  // ================= 2. POST PROJECT (8-SECTION CASTING BRIEF + MEDIA) =================
   function renderPostProject() {
     const c = state.overview.company;
+    const secHead = (num, title, subtitle) => `
+      <div id="pp-sec-${num}" style="grid-column:span 2; margin-top:14px; padding:10px 14px; background:var(--bg-ivory); border-left:4px solid var(--crimson); border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <strong style="font-size:1rem; color:var(--bg-obsidian);">${num}. ${title}</strong>
+        <span style="font-size:0.76rem; color:var(--text-muted); font-weight:600;">${subtitle}</span>
+      </div>`;
+
     document.getElementById('dash-view').innerHTML = `
-      <div style="display:grid; grid-template-columns:1.5fr 0.9fr; gap:22px; align-items:start;">
+      <div style="display:grid; grid-template-columns:1.65fr 0.75fr; gap:22px; align-items:start;">
         <div class="card" style="padding:28px;">
-          <div style="display:flex; gap:18px; margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--border-light); font-size:0.86rem; font-weight:700;">
-            <span style="color:var(--crimson);">① Project Details</span>
-            <span style="color:var(--text-muted);">② Roles &amp; Online Audition Script</span>
-            <span style="color:var(--text-muted);">③ Publish</span>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border-light); font-size:0.78rem; font-weight:700;">
+            ${[
+              [1, '1. Basic Info'], [2, '2. Talent'], [3, '3. Location & Schedule'], [4, '4. Payment'],
+              [5, '5. Audition'], [6, '6. Application'], [7, '7. Contact'], [8, '8. Media']
+            ].map(([n, lbl]) => `<a href="#pp-sec-${n}" class="badge badge-neutral" style="text-decoration:none;">${lbl}</a>`).join('')}
           </div>
-          <h2 style="margin-bottom:18px;">Add Your Project Details</h2>
-          <form id="post-project-form">
+          <h2 style="margin-bottom:6px;">Add Your Project Details</h2>
+          <p style="margin:0 0 18px; color:var(--text-muted); font-size:0.88rem;">Complete all casting post sections below to publish a verified brief with media and script attachments.</p>
+
+          <form id="post-project-form" enctype="multipart/form-data">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+
+              ${secHead(1, 'Basic Project Information', 'Required')}
               <div style="grid-column:span 2;">
-                <label class="form-label">Project Title <span class="req">*</span></label>
+                <label class="form-label">Project title <span class="req">*</span></label>
                 <input class="form-control" name="projectTitle" required placeholder="e.g. Royal Horizon Feature Film">
               </div>
               <div>
-                <label class="form-label">Project Type <span class="req">*</span></label>
-                <select class="form-select" name="projectType">
+                <label class="form-label">Project type <span class="req">*</span></label>
+                <select class="form-select" name="projectType" required>
+                  <option>Movie</option>
+                  <option>Short Film</option>
+                  <option>Web Series</option>
+                  <option>TV Serial</option>
+                  <option>Advertisement</option>
+                  <option>Music Video</option>
+                  <option>Photoshoot</option>
                   <option>Casting Call</option>
                   <option>Audition</option>
-                  <option>Job</option>
-                  <option>Photo Shoot</option>
                   <option>Event</option>
-                  <option>Freelance Project/Assignment</option>
+                  <option>Freelance Project</option>
                 </select>
               </div>
               <div>
-                <label class="form-label">Talent Category <span class="req">*</span></label>
-                <select class="form-select" name="targetCategory">
+                <label class="form-label">Project language <span class="req">*</span></label>
+                <select class="form-select" name="projectLanguage" required>
+                  <option>Kannada</option>
+                  <option>Tamil</option>
+                  <option>Telugu</option>
+                  <option>Hindi</option>
+                  <option>English</option>
+                  <option>Malayalam</option>
+                  <option>Marathi</option>
+                  <option>Bengali</option>
+                  <option>Punjabi</option>
+                  <option>Multi-lingual</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Production house / Banner name <span class="req">*</span></label>
+                <input class="form-control" name="productionHouseName" required placeholder="e.g. Starlight Pictures Banner">
+              </div>
+              <div>
+                <label class="form-label">Casting company name <span class="req">*</span></label>
+                <input class="form-control" name="castingCompanyName" required value="${EW.esc(c.companyName)}">
+              </div>
+              <div>
+                <label class="form-label">Project status <span class="req">*</span></label>
+                <select class="form-select" name="projectStage" required>
+                  <option>Pre-production</option>
+                  <option selected>Casting Open</option>
+                  <option>Shooting Started</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Tags <span class="opt">(Optional keywords)</span></label>
+                <input class="form-control" name="tags" placeholder="e.g. ott, lead, drama, bengaluru">
+              </div>
+              <div style="grid-column:span 2;">
+                <label class="form-label">Project description <span class="req">*</span></label>
+                <textarea class="form-textarea" name="projectDetails" required placeholder="Describe story premise, production scale, shooting schedule, and key highlights..."></textarea>
+              </div>
+
+              ${secHead(2, 'Talent Requirements', 'Role & Artist Criteria')}
+              <div>
+                <label class="form-label">Required talent <span class="req">*</span></label>
+                <select class="form-select" name="targetCategory" required>
                   <option>Actor</option>
+                  <option>Actress</option>
                   <option>Model</option>
-                  <option>Singer</option>
                   <option>Dancer</option>
+                  <option>Singer</option>
+                  <option>Child Artist</option>
+                  <option>Supporting Artist</option>
                   <option>Voice-over Artist</option>
                   <option>Stand-up Comedian</option>
                   <option>Musician</option>
@@ -272,24 +332,84 @@
                   <option>Filmmaker</option>
                 </select>
               </div>
+              <div>
+                <label class="form-label">Gender <span class="req">*</span></label>
+                <select class="form-select" name="targetGender" required>
+                  <option>Any</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Age range (Min – Max) <span class="req">*</span></label>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                  <input type="number" class="form-control" name="ageMin" min="1" max="90" value="18" required placeholder="Min (e.g. 18)">
+                  <input type="number" class="form-control" name="ageMax" min="1" max="95" value="25" required placeholder="Max (e.g. 25)">
+                </div>
+              </div>
+              <div>
+                <label class="form-label">Height <span class="opt">(Optional)</span></label>
+                <input class="form-control" name="heightRequirement" placeholder="e.g. 5'6&quot; - 6'0&quot;">
+              </div>
+              <div>
+                <label class="form-label">Preferred appearance <span class="req">*</span></label>
+                <input class="form-control" name="preferredAppearance" required placeholder="e.g. Urban athletic, expressive screen presence">
+              </div>
+              <div>
+                <label class="form-label">Experience <span class="req">*</span></label>
+                <select class="form-select" name="experienceLevel" required>
+                  <option>Fresher</option>
+                  <option>Experienced</option>
+                  <option selected>Both</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Number of artists required <span class="req">*</span></label>
+                <input type="number" class="form-control" name="artistsRequiredCount" min="1" value="1" required>
+              </div>
+              <div>
+                <label class="form-label">Character name <span class="opt">(Optional)</span></label>
+                <input class="form-control" name="characterName" placeholder="e.g. Arjun / Kavya">
+              </div>
               <div style="grid-column:span 2;">
-                <label class="form-label">Project Details <span class="req">*</span></label>
-                <textarea class="form-textarea" name="projectDetails" required placeholder="Describe character arc, shoot dates, budget, and preferences..."></textarea>
+                <label class="form-label">Role description <span class="req">*</span></label>
+                <textarea class="form-textarea" name="roleDescription" required placeholder="Describe character personality, dialogue skills, stunts, dance or dialect needs..."></textarea>
+              </div>
+
+              ${secHead(3, 'Project Location and Schedule', 'Dates & Availability')}
+              <div>
+                <label class="form-label">Shooting location <span class="req">*</span></label>
+                <input class="form-control" name="location" required value="${EW.esc(c.city)}">
               </div>
               <div>
-                <label class="form-label">Tags</label>
-                <input class="form-control" name="tags" placeholder="e.g. ott, lead, drama, mumbai">
+                <label class="form-label">Audition location <span class="req">*</span></label>
+                <input class="form-control" name="auditionLocation" required placeholder="e.g. Online / Studio Hub, Indiranagar">
               </div>
               <div>
-                <label class="form-label">Location</label>
-                <input class="form-control" name="location" value="${EW.esc(c.city)}">
+                <label class="form-label">Audition date <span class="req">*</span></label>
+                <input type="date" class="form-control" name="auditionDate" required>
               </div>
               <div>
-                <label class="form-label">Budget</label>
-                <input class="form-control" name="budget" placeholder="e.g. Rs. 75,000 / project">
+                <label class="form-label">Audition type <span class="req">*</span></label>
+                <select class="form-select" name="auditionType" required>
+                  <option>Online</option>
+                  <option>Offline</option>
+                </select>
               </div>
               <div>
-                <label class="form-label">Duration</label>
+                <label class="form-label">Shooting start date <span class="req">*</span></label>
+                <input type="date" class="form-control" name="shootingStartDate" required>
+              </div>
+              <div>
+                <label class="form-label">Shooting end date <span class="opt">(Optional)</span></label>
+                <input type="date" class="form-control" name="shootingEndDate">
+              </div>
+              <div>
+                <label class="form-label">Shooting duration <span class="req">*</span></label>
+                <input class="form-control" name="shootingDuration" required placeholder="e.g. 20 Days / 2 Months">
+              </div>
+              <div>
+                <label class="form-label">Schedule type</label>
                 <select class="form-select" name="durationType">
                   <option>Full-Time</option>
                   <option>Part-Time</option>
@@ -297,48 +417,208 @@
                 </select>
               </div>
               <div style="grid-column:span 2;">
-                <label style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:0.88rem; margin-bottom:8px;">
+                <label class="form-label">Availability requirements <span class="req">*</span></label>
+                <input class="form-control" name="availabilityRequirements" required placeholder="e.g. Full-day shoot availability including weekends & outdoor travel">
+              </div>
+
+              ${secHead(4, 'Payment Details', 'Compensation & Logistics')}
+              <div>
+                <label class="form-label">Payment type <span class="req">*</span></label>
+                <select class="form-select" name="paymentType" required>
+                  <option>Paid</option>
+                  <option>Unpaid</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Salary / Compensation <span class="req">*</span></label>
+                <input class="form-control" name="budget" required placeholder="e.g. Rs. 15,000 / Rs. 1,50,000">
+              </div>
+              <div>
+                <label class="form-label">Payment basis <span class="req">*</span></label>
+                <select class="form-select" name="paymentBasis" required>
+                  <option>Per day</option>
+                  <option>Per project</option>
+                  <option>Per episode</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Accommodation provided <span class="req">*</span></label>
+                <select class="form-select" name="accommodationProvided" required>
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Food provided <span class="req">*</span></label>
+                <select class="form-select" name="foodProvided" required>
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Travel expenses covered <span class="req">*</span></label>
+                <select class="form-select" name="travelExpensesCovered" required>
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
+              </div>
+
+              ${secHead(5, 'Audition Details', 'Process & Instructions')}
+              <div style="grid-column:span 2;">
+                <label class="form-label">Audition process <span class="req">*</span></label>
+                <input class="form-control" name="auditionProcess" required placeholder="e.g. Round 1: Self-tape screening · Round 2: Director look test">
+              </div>
+              <div style="grid-column:span 2;">
+                <label class="form-label">Audition instructions <span class="req">*</span></label>
+                <textarea class="form-textarea" name="auditionInstructions" required placeholder="Framing guidelines, wardrobe suggestions, lighting & audio clarity instructions..."></textarea>
+              </div>
+              <div>
+                <label class="form-label">Self-introduction video required <span class="req">*</span></label>
+                <select class="form-select" name="selfIntroVideoRequired" required>
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Portfolio required <span class="req">*</span></label>
+                <select class="form-select" name="portfolioRequired" required>
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label">Last date to apply <span class="req">*</span></label>
+                <input type="date" class="form-control" name="lastDateToApply" required>
+              </div>
+              <div style="display:flex; align-items:flex-end; padding-bottom:10px;">
+                <label style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:0.86rem;">
                   <input type="checkbox" name="onlineAuditionEnabled" value="true" checked>
-                  Enable Online Video Auditions (Invite artists to upload self-tapes)
+                  Accept Online Video Auditions
                 </label>
-                <textarea class="form-textarea" name="auditionScript" placeholder="Paste audition script lines or self-tape directions for artists..."></textarea>
+              </div>
+              <div style="grid-column:span 2;">
+                <label class="form-label">Audition script / Dialogue <span class="opt">(Optional)</span></label>
+                <textarea class="form-textarea" name="auditionScript" placeholder="Paste audition script lines or dialogue prompt for self-tape submissions..."></textarea>
+              </div>
+
+              ${secHead(6, 'Application Requirements', 'What Artists Must Submit')}
+              <div>
+                <label class="form-label">Required photographs <span class="req">*</span></label>
+                <input class="form-control" name="requiredPhotographs" required placeholder="e.g. 2 Headshots + 1 Full-length unedited photo">
+              </div>
+              <div>
+                <label class="form-label">Introduction video <span class="req">*</span></label>
+                <input class="form-control" name="introVideoRequirement" required placeholder="e.g. 30-45 sec video stating name, age, city & height">
+              </div>
+              <div>
+                <label class="form-label">Acting portfolio <span class="req">*</span></label>
+                <input class="form-control" name="actingPortfolioRequirement" required placeholder="e.g. PDF portfolio or performance reel">
+              </div>
+              <div>
+                <label class="form-label">Previous work links <span class="req">*</span></label>
+                <input class="form-control" name="previousWorkLinksReq" required placeholder="e.g. YouTube / IMDb / Google Drive showreel link">
+              </div>
+              <div>
+                <label class="form-label">Contact information <span class="req">*</span></label>
+                <input class="form-control" name="applicantContactReq" required placeholder="e.g. Phone number, WhatsApp & Email">
+              </div>
+              <div>
+                <label class="form-label">Additional documents <span class="opt">(Optional)</span></label>
+                <input class="form-control" name="additionalDocumentsReq" placeholder="e.g. Passport / Parent NOC for minors">
+              </div>
+
+              ${secHead(7, 'Contact Information', 'Casting Desk Details')}
+              <div>
+                <label class="form-label">Casting director name <span class="req">*</span></label>
+                <input class="form-control" name="castingDirectorName" required value="${EW.esc(c.representativeName)}">
+              </div>
+              <div>
+                <label class="form-label">Official email <span class="req">*</span></label>
+                <input type="email" class="form-control" name="contactEmail" required value="${EW.esc(c.companyEmail)}">
+              </div>
+              <div>
+                <label class="form-label">Contact number <span class="req">*</span></label>
+                <input type="tel" class="form-control" name="contactNumber" required value="${EW.esc(c.contactNumber)}">
+              </div>
+              <div>
+                <label class="form-label">WhatsApp number <span class="req">*</span></label>
+                <input type="tel" class="form-control" name="whatsappNumber" required value="${EW.esc(c.contactNumber)}">
+              </div>
+              <div style="grid-column:span 2;">
+                <label class="form-label">Website / Social media links <span class="opt">(Optional)</span></label>
+                <input class="form-control" name="websiteOrSocialLinks" value="${EW.esc(c.website || '')}" placeholder="https://yourstudio.in · Instagram / LinkedIn">
+              </div>
+
+              ${secHead(8, 'Media and Attachments', 'Posters, Looks & Script PDF')}
+              <div>
+                <label class="form-label">Project poster</label>
+                <input type="file" class="form-control" name="projectPoster" accept="image/*">
+              </div>
+              <div>
+                <label class="form-label">Project promotional image</label>
+                <input type="file" class="form-control" name="projectPromotionalImage" accept="image/*">
+              </div>
+              <div>
+                <label class="form-label">Reference images <span class="opt">(Multiple allowed)</span></label>
+                <input type="file" class="form-control" name="referenceImages" accept="image/*" multiple>
+              </div>
+              <div>
+                <label class="form-label">Character look references <span class="opt">(Multiple allowed)</span></label>
+                <input type="file" class="form-control" name="characterLookReferences" accept="image/*" multiple>
+              </div>
+              <div style="grid-column:span 2;">
+                <label class="form-label">Audition script PDF <span class="opt">(PDF or DOC)</span></label>
+                <input type="file" class="form-control" name="auditionScriptPdf" accept=".pdf,.doc,.docx,image/*">
               </div>
             </div>
-            <div style="display:flex; justify-content:flex-end; margin-top:18px;">
-              <button type="submit" class="btn btn-primary">Publish Casting Call →</button>
+
+            <div style="display:flex; justify-content:flex-end; margin-top:22px;">
+              <button type="submit" id="publish-project-btn" class="btn btn-primary" style="padding:13px 28px;">Publish Casting Call →</button>
             </div>
           </form>
         </div>
 
-        <div class="card" style="padding:22px;">
+        <div class="card" style="padding:22px; position:sticky; top:90px;">
           <h3 style="margin-bottom:12px;">Posted Projects</h3>
           ${(state.overview.recentProjects || []).map(p => `
-            <div style="padding:12px; border:1px solid var(--border-light); border-radius:12px; margin-bottom:10px;">
+            <div style="padding:12px; border:1px solid var(--border-light); border-radius:12px; margin-bottom:10px; cursor:pointer;" onclick="openProjectBriefModal(${p.id})">
               <div style="font-weight:700;">${EW.esc(p.projectTitle)}</div>
-              <div style="font-size:0.78rem; color:var(--text-muted);">${EW.esc(p.projectType)} · ${p.applicationsCount} apps</div>
+              <div style="font-size:0.78rem; color:var(--text-muted);">${EW.esc(p.projectType)} · ${EW.esc(p.projectLanguage || '')} · ${p.applicationsCount} apps</div>
             </div>`).join('')}
         </div>
       </div>`;
 
     document.getElementById('post-project-form').addEventListener('submit', async (ev) => {
       ev.preventDefault();
-      const fd = new FormData(ev.target);
-      const body = Object.fromEntries(fd.entries());
-      body.onlineAuditionEnabled = fd.has('onlineAuditionEnabled');
-      await EW.api('/api/dashboard/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      EW.toast('Project published! Matching online auditions attached.');
-      await refreshOverview();
-      switchSection('projects');
+      const btn = document.getElementById('publish-project-btn');
+      btn.disabled = true;
+      btn.textContent = 'Publishing Casting Call...';
+      try {
+        const fd = new FormData(ev.target);
+        if (!fd.has('onlineAuditionEnabled')) {
+          fd.set('onlineAuditionEnabled', 'false');
+        }
+        await EW.api('/api/dashboard/projects', {
+          method: 'POST',
+          body: fd
+        });
+        EW.toast('Project published with full casting brief & attachments!');
+        await refreshOverview();
+        switchSection('projects');
+      } catch (err) {
+        EW.toast(err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Publish Casting Call →';
+      }
     });
   }
 
   // ================= 3. PROJECTS / PROJECT HISTORY =================
+  let cachedProjects = [];
+
   async function renderProjects(filter = 'ALL') {
     const projects = await EW.api(`/api/dashboard/projects?filter=${encodeURIComponent(filter)}`);
+    cachedProjects = projects;
     document.getElementById('dash-view').innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
         <h2>PROJECT HISTORY</h2>
@@ -354,38 +634,85 @@
       </div>
       ${projects.map(p => `
         <div class="card" style="padding:24px; margin-bottom:16px;">
-          <div style="display:grid; grid-template-columns:1.7fr 0.7fr; gap:18px;">
+          <div style="display:grid; grid-template-columns:1.7fr 0.85fr; gap:18px;">
             <div>
-              <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+              <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:8px;">
+                <span class="badge badge-neutral">${EW.esc(p.projectType)}</span>
                 <span class="badge badge-neutral">${EW.esc(p.targetCategory)}</span>
+                ${p.projectLanguage ? `<span class="badge badge-neutral">${EW.esc(p.projectLanguage)}</span>` : ''}
+                ${p.projectStage ? `<span class="badge badge-pending">${EW.esc(p.projectStage)}</span>` : ''}
                 ${p.promoted ? '<span class="badge badge-showcase">★ PROMOTED</span>' : ''}
                 ${p.onlineAuditionEnabled ? '<span class="badge badge-approved">Online Auditions Active</span>' : ''}
               </div>
               <h3 style="font-size:1.35rem; margin-bottom:6px;">${EW.esc(p.projectTitle)}</h3>
               <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
-                Posted on: ${EW.esc(p.postedDate)} &nbsp;|&nbsp; Expires on: ${EW.esc(p.expiryDate)} &nbsp;|&nbsp; Last viewed on: ${EW.esc(p.lastViewedDate)}
+                Posted on: ${EW.esc(p.postedDate)} &nbsp;|&nbsp; Last Date: ${EW.esc(p.lastDateToApply || p.expiryDate)} &nbsp;|&nbsp; Last viewed on: ${EW.esc(p.lastViewedDate)}
               </div>
               <p style="font-size:0.9rem; color:var(--text-body); margin-bottom:10px;">${EW.esc(p.projectDetails)}</p>
               <div style="font-size:0.82rem; color:var(--text-muted);">
-                Posted by <strong style="color:var(--text-dark);">${EW.esc(p.companyName)}</strong>
+                Banner: <strong style="color:var(--text-dark);">${EW.esc(p.productionHouseName || p.companyName)}</strong>
+                · Casting: <strong style="color:var(--text-dark);">${EW.esc(p.castingCompanyName || p.companyName)}</strong>
                 ${p.companyVerified ? '<span class="blue-tick" style="width:15px; height:15px; font-size:9px; vertical-align:middle;">✓</span>' : ''}
               </div>
             </div>
-            <div style="border-left:1px solid var(--border-light); padding-left:18px; font-size:0.88rem;">
-              <strong>${EW.esc(p.targetCategory)}</strong>
-              <div style="color:var(--text-muted);">${EW.esc(p.targetGender)}, ${p.ageMin} - ${p.ageMax} Yrs</div>
-              <div style="color:var(--text-muted); margin-top:4px;">📍 ${EW.esc(p.location || 'Pan-India')}</div>
-              <div style="color:var(--text-muted); margin-top:4px;">${EW.esc(p.budget || 'Negotiable')}</div>
+            <div style="border-left:1px solid var(--border-light); padding-left:18px; font-size:0.86rem;">
+              ${p.projectPosterPath ? `<img src="${EW.esc(p.projectPosterPath)}" style="width:100%; height:96px; object-fit:cover; border-radius:10px; margin-bottom:8px;">` : ''}
+              <strong>${EW.esc(p.targetCategory)} (${p.artistsRequiredCount || 1} needed)</strong>
+              <div style="color:var(--text-muted);">${EW.esc(p.targetGender)}, ${p.ageMin} - ${p.ageMax} Yrs · ${EW.esc(p.experienceLevel || 'Both')}</div>
+              <div style="color:var(--text-muted); margin-top:4px;">📍 ${EW.esc(p.location || 'Pan-India')} · ${EW.esc(p.auditionType || 'Online')}</div>
+              <div style="color:var(--crimson-dark); font-weight:700; margin-top:4px;">${EW.esc(p.paymentType || 'Paid')}: ${EW.esc(p.budget || 'Negotiable')} (${EW.esc(p.paymentBasis || 'Per project')})</div>
             </div>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border-light);">
-            <button type="button" onclick="openProjectApplications(${p.id})" class="btn btn-outline-dark btn-sm">VIEW ${p.applicationsCount} APPLICATIONS</button>
+          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border-light);">
+            <button type="button" onclick="openProjectApplications(${p.id})" class="btn btn-outline-dark btn-sm">VIEW ${p.applicationsCount} APPS</button>
+            <button type="button" onclick="openProjectBriefModal(${p.id})" class="btn btn-dark btn-sm">FULL BRIEF &amp; MEDIA</button>
             <button type="button" onclick="promoteProject(${p.id})" class="btn btn-outline-dark btn-sm">${p.promoted ? '✓ PROMOTED' : 'PROMOTE PROJECT'}</button>
             <button type="button" onclick="openShareModal(${p.id}, '${EW.esc(p.projectTitle)}')" class="btn btn-outline-dark btn-sm">SHARE JOB</button>
           </div>
         </div>`).join('')}`;
   }
   window.renderProjectsFilter = renderProjects;
+
+  window.openProjectBriefModal = async (pid) => {
+    if (!cachedProjects.length) {
+      cachedProjects = await EW.api('/api/dashboard/projects?filter=ALL');
+    }
+    const p = cachedProjects.find(x => x.id === pid) || (state.overview.recentProjects || []).find(x => x.id === pid);
+    if (!p) return;
+    let refImgs = [];
+    let lookImgs = [];
+    try { refImgs = JSON.parse(p.referenceImagePathsJson || '[]'); } catch (_) {}
+    try { lookImgs = JSON.parse(p.characterLookPathsJson || '[]'); } catch (_) {}
+
+    const kv = (k, v) => `<div style="padding:8px 10px; background:var(--bg-ivory); border-radius:8px; font-size:0.84rem;"><div style="font-size:0.72rem; color:var(--text-muted); font-weight:700;">${k}</div><strong>${EW.esc(v || '—')}</strong></div>`;
+    document.getElementById('am-title').textContent = p.projectTitle;
+    document.getElementById('am-body').innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          ${kv('Project Type / Language / Status', `${p.projectType} · ${p.projectLanguage || '—'} · ${p.projectStage || '—'}`)}
+          ${kv('Production Banner / Casting Company', `${p.productionHouseName || '—'} / ${p.castingCompanyName || p.companyName}`)}
+          ${kv('Required Talent & Count', `${p.targetCategory} (${p.artistsRequiredCount || 1}) · ${p.targetGender} · ${p.ageMin}-${p.ageMax} yrs`)}
+          ${kv('Height / Appearance / Experience', `${p.heightRequirement || 'Any'} · ${p.preferredAppearance || '—'} · ${p.experienceLevel || 'Both'}`)}
+          ${kv('Character & Role', `${p.characterName ? p.characterName + ' — ' : ''}${p.roleDescription || p.projectDetails}`)}
+          ${kv('Shoot & Audition Schedule', `Shoot: ${p.location || '—'} (${p.shootingStartDate || 'TBD'} to ${p.shootingEndDate || 'TBD'}, ${p.shootingDuration || '—'}) | Audition: ${p.auditionType || 'Online'} @ ${p.auditionLocation || '—'} on ${p.auditionDate || 'TBD'}`)}
+          ${kv('Availability', p.availabilityRequirements)}
+          ${kv('Payment & Logistics', `${p.paymentType || 'Paid'} · ${p.budget || '—'} (${p.paymentBasis || '—'}) | Stay: ${p.accommodationProvided || 'No'}, Food: ${p.foodProvided || 'No'}, Travel: ${p.travelExpensesCovered || 'No'}`)}
+          ${kv('Audition Process & Deadline', `${p.auditionProcess || '—'} | Self-Intro Video: ${p.selfIntroVideoRequired || 'Yes'}, Portfolio: ${p.portfolioRequired || 'Yes'} | Apply by: ${p.lastDateToApply || p.expiryDate}`)}
+          ${kv('Audition Instructions', p.auditionInstructions)}
+          ${kv('Application Requirements', `Photos: ${p.requiredPhotographs || '—'} | Intro: ${p.introVideoRequirement || '—'} | Portfolio: ${p.actingPortfolioRequirement || '—'} | Work Links: ${p.previousWorkLinksReq || '—'} | Contact: ${p.applicantContactReq || '—'} | Extra Docs: ${p.additionalDocumentsReq || 'None'}`)}
+          ${kv('Casting Contact Info', `${p.castingDirectorName || '—'} | ${p.contactEmail || '—'} | ${p.contactNumber || '—'} | WhatsApp: ${p.whatsappNumber || '—'} | ${p.websiteOrSocialLinks || '—'}`)}
+        </div>
+        ${p.auditionScript ? `<div style="padding:12px; background:#FAF7F2; border:1px solid var(--border-light); border-radius:10px; font-size:0.86rem;"><strong>Audition Script / Dialogue:</strong><br>${EW.esc(p.auditionScript)}</div>` : ''}
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          ${p.projectPosterPath ? `<a href="${EW.esc(p.projectPosterPath)}" target="_blank" class="btn btn-outline-dark btn-sm">Project Poster ↗</a>` : ''}
+          ${p.projectPromotionalImagePath ? `<a href="${EW.esc(p.projectPromotionalImagePath)}" target="_blank" class="btn btn-outline-dark btn-sm">Promotional Image ↗</a>` : ''}
+          ${p.auditionScriptPdfPath ? `<a href="${EW.esc(p.auditionScriptPdfPath)}" target="_blank" class="btn btn-primary btn-sm">Audition Script PDF ↗</a>` : ''}
+        </div>
+        ${refImgs.length ? `<div><strong style="font-size:0.85rem;">Reference Images:</strong><div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;">${refImgs.map(u => `<a href="${EW.esc(u)}" target="_blank"><img src="${EW.esc(u)}" style="width:76px; height:76px; object-fit:cover; border-radius:8px;"></a>`).join('')}</div></div>` : ''}
+        ${lookImgs.length ? `<div><strong style="font-size:0.85rem;">Character Look References:</strong><div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;">${lookImgs.map(u => `<a href="${EW.esc(u)}" target="_blank"><img src="${EW.esc(u)}" style="width:76px; height:76px; object-fit:cover; border-radius:8px;"></a>`).join('')}</div></div>` : ''}
+      </div>`;
+    document.getElementById('artist-modal').classList.add('open');
+  };
 
   window.openProjectApplications = (pid) => {
     state.appProjectId = pid;

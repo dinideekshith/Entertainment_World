@@ -132,31 +132,156 @@ public class RecruiterDashboardController {
         return ResponseEntity.ok(filtered);
     }
 
-    @PostMapping("/projects")
-    public ResponseEntity<?> postProject(@RequestBody Map<String, Object> body, HttpSession session) {
+    @PostMapping(value = "/projects", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> postProject(
+            // 1. Basic project information
+            @RequestParam String projectTitle,
+            @RequestParam String projectType,
+            @RequestParam String productionHouseName,
+            @RequestParam String castingCompanyName,
+            @RequestParam String projectDetails,
+            @RequestParam String projectLanguage,
+            @RequestParam String projectStage,
+            // 2. Talent requirements
+            @RequestParam String targetCategory,
+            @RequestParam(defaultValue = "Any") String targetGender,
+            @RequestParam(defaultValue = "18") int ageMin,
+            @RequestParam(defaultValue = "35") int ageMax,
+            @RequestParam(required = false) String heightRequirement,
+            @RequestParam(required = false) String preferredAppearance,
+            @RequestParam(defaultValue = "Both") String experienceLevel,
+            @RequestParam(defaultValue = "1") int artistsRequiredCount,
+            @RequestParam(required = false) String roleDescription,
+            @RequestParam(required = false) String characterName,
+            // 3. Project location and schedule
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String auditionLocation,
+            @RequestParam(required = false) String auditionDate,
+            @RequestParam(defaultValue = "Online") String auditionType,
+            @RequestParam(required = false) String shootingStartDate,
+            @RequestParam(required = false) String shootingEndDate,
+            @RequestParam(required = false) String shootingDuration,
+            @RequestParam(required = false) String availabilityRequirements,
+            @RequestParam(defaultValue = "Full-Time") String durationType,
+            // 4. Payment details
+            @RequestParam(defaultValue = "Paid") String paymentType,
+            @RequestParam(required = false) String budget,
+            @RequestParam(defaultValue = "Per day") String paymentBasis,
+            @RequestParam(defaultValue = "No") String accommodationProvided,
+            @RequestParam(defaultValue = "No") String foodProvided,
+            @RequestParam(defaultValue = "No") String travelExpensesCovered,
+            // 5. Audition details
+            @RequestParam(required = false) String auditionProcess,
+            @RequestParam(required = false) String auditionInstructions,
+            @RequestParam(defaultValue = "Yes") String selfIntroVideoRequired,
+            @RequestParam(defaultValue = "Yes") String portfolioRequired,
+            @RequestParam(required = false) String auditionScript,
+            @RequestParam(required = false) String lastDateToApply,
+            @RequestParam(defaultValue = "true") boolean onlineAuditionEnabled,
+            // 6. Application requirements
+            @RequestParam(required = false) String requiredPhotographs,
+            @RequestParam(required = false) String introVideoRequirement,
+            @RequestParam(required = false) String actingPortfolioRequirement,
+            @RequestParam(required = false) String previousWorkLinksReq,
+            @RequestParam(required = false) String applicantContactReq,
+            @RequestParam(required = false) String additionalDocumentsReq,
+            // 7. Contact information
+            @RequestParam(required = false) String castingDirectorName,
+            @RequestParam(required = false) String contactEmail,
+            @RequestParam(required = false) String contactNumber,
+            @RequestParam(required = false) String whatsappNumber,
+            @RequestParam(required = false) String websiteOrSocialLinks,
+            // 8. Media and attachments
+            @RequestParam(value = "projectPoster", required = false) MultipartFile projectPoster,
+            @RequestParam(value = "referenceImages", required = false) MultipartFile[] referenceImages,
+            @RequestParam(value = "characterLookReferences", required = false) MultipartFile[] characterLookReferences,
+            @RequestParam(value = "auditionScriptPdf", required = false) MultipartFile auditionScriptPdf,
+            @RequestParam(value = "projectPromotionalImage", required = false) MultipartFile projectPromotionalImage,
+            @RequestParam(required = false) String tags,
+            HttpSession session
+    ) {
         CastingCompany company = authHelper.requirePaidDashboardCompany(session);
+        if (projectTitle.isBlank() || projectDetails.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Project title and project description are required."));
+        }
+
         CastingProject p = new CastingProject();
         p.setCompanyId(company.getId());
-        p.setProjectTitle(String.valueOf(body.getOrDefault("projectTitle", "")).trim());
-        p.setProjectType(String.valueOf(body.getOrDefault("projectType", "Casting Call")));
-        p.setTargetCategory(String.valueOf(body.getOrDefault("targetCategory", "Actor")));
-        p.setTargetGender(String.valueOf(body.getOrDefault("targetGender", "All")));
-        p.setAgeMin(Integer.parseInt(String.valueOf(body.getOrDefault("ageMin", 18))));
-        p.setAgeMax(Integer.parseInt(String.valueOf(body.getOrDefault("ageMax", 50))));
-        p.setProjectDetails(String.valueOf(body.getOrDefault("projectDetails", "")).trim());
-        p.setTags(String.valueOf(body.getOrDefault("tags", "")));
-        p.setDurationType(String.valueOf(body.getOrDefault("durationType", "Full-Time")));
-        p.setBudget(String.valueOf(body.getOrDefault("budget", "")));
-        p.setLocation(String.valueOf(body.getOrDefault("location", company.getCity())));
-        p.setOnlineAuditionEnabled(Boolean.parseBoolean(String.valueOf(body.getOrDefault("onlineAuditionEnabled", true))));
-        p.setAuditionScript(String.valueOf(body.getOrDefault("auditionScript", "")));
+        p.setProjectTitle(projectTitle.trim());
+        p.setProjectType(projectType.trim());
+        p.setProductionHouseName(productionHouseName.trim());
+        p.setCastingCompanyName(castingCompanyName.isBlank() ? company.getCompanyName() : castingCompanyName.trim());
+        p.setProjectDetails(projectDetails.trim());
+        p.setProjectLanguage(projectLanguage.trim());
+        p.setProjectStage(projectStage.trim());
+
+        p.setTargetCategory(targetCategory.trim());
+        p.setTargetGender(targetGender.trim());
+        p.setAgeMin(ageMin);
+        p.setAgeMax(ageMax);
+        p.setHeightRequirement(trimOrNull(heightRequirement));
+        p.setPreferredAppearance(trimOrNull(preferredAppearance));
+        p.setExperienceLevel(experienceLevel);
+        p.setArtistsRequiredCount(Math.max(1, artistsRequiredCount));
+        p.setRoleDescription(trimOrNull(roleDescription));
+        p.setCharacterName(trimOrNull(characterName));
+
+        p.setLocation(location == null || location.isBlank() ? company.getCity() : location.trim());
+        p.setAuditionLocation(trimOrNull(auditionLocation));
+        p.setAuditionDate(parseDateOrNull(auditionDate));
+        p.setAuditionType(auditionType);
+        p.setShootingStartDate(parseDateOrNull(shootingStartDate));
+        p.setShootingEndDate(parseDateOrNull(shootingEndDate));
+        p.setShootingDuration(trimOrNull(shootingDuration));
+        p.setAvailabilityRequirements(trimOrNull(availabilityRequirements));
+        p.setDurationType(durationType);
+
+        p.setPaymentType(paymentType);
+        p.setBudget(trimOrNull(budget));
+        p.setPaymentBasis(paymentBasis);
+        p.setAccommodationProvided(accommodationProvided);
+        p.setFoodProvided(foodProvided);
+        p.setTravelExpensesCovered(travelExpensesCovered);
+
+        p.setAuditionProcess(trimOrNull(auditionProcess));
+        p.setAuditionInstructions(trimOrNull(auditionInstructions));
+        p.setSelfIntroVideoRequired(selfIntroVideoRequired);
+        p.setPortfolioRequired(portfolioRequired);
+        p.setAuditionScript(trimOrNull(auditionScript));
+        LocalDate applyDeadline = parseDateOrNull(lastDateToApply);
+        p.setLastDateToApply(applyDeadline);
+        p.setOnlineAuditionEnabled(onlineAuditionEnabled);
+
+        p.setRequiredPhotographs(trimOrNull(requiredPhotographs));
+        p.setIntroVideoRequirement(trimOrNull(introVideoRequirement));
+        p.setActingPortfolioRequirement(trimOrNull(actingPortfolioRequirement));
+        p.setPreviousWorkLinksReq(trimOrNull(previousWorkLinksReq));
+        p.setApplicantContactReq(trimOrNull(applicantContactReq));
+        p.setAdditionalDocumentsReq(trimOrNull(additionalDocumentsReq));
+
+        p.setCastingDirectorName(castingDirectorName == null || castingDirectorName.isBlank() ? company.getRepresentativeName() : castingDirectorName.trim());
+        p.setContactEmail(contactEmail == null || contactEmail.isBlank() ? company.getCompanyEmail() : contactEmail.trim());
+        p.setContactNumber(contactNumber == null || contactNumber.isBlank() ? company.getContactNumber() : contactNumber.trim());
+        p.setWhatsappNumber(trimOrNull(whatsappNumber));
+        p.setWebsiteOrSocialLinks(websiteOrSocialLinks == null || websiteOrSocialLinks.isBlank() ? company.getWebsite() : websiteOrSocialLinks.trim());
+
+        if (projectPoster != null && !projectPoster.isEmpty()) {
+            p.setProjectPosterPath(fileStorage.store(projectPoster, "projects"));
+        }
+        p.setReferenceImagePathsJson(storeMultiPathsJson(referenceImages, "projects"));
+        p.setCharacterLookPathsJson(storeMultiPathsJson(characterLookReferences, "projects"));
+        if (auditionScriptPdf != null && !auditionScriptPdf.isEmpty()) {
+            p.setAuditionScriptPdfPath(fileStorage.store(auditionScriptPdf, "projects"));
+        }
+        if (projectPromotionalImage != null && !projectPromotionalImage.isEmpty()) {
+            p.setProjectPromotionalImagePath(fileStorage.store(projectPromotionalImage, "projects"));
+        }
+
+        p.setTags(trimOrNull(tags));
         p.setPostedDate(LocalDate.now());
-        p.setExpiryDate(LocalDate.now().plusDays(30));
+        p.setExpiryDate(applyDeadline != null ? applyDeadline : LocalDate.now().plusDays(30));
         p.setLastViewedDate(LocalDate.now());
 
-        if (p.getProjectTitle().isBlank() || p.getProjectDetails().isBlank()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Project title and details are required."));
-        }
         CastingProject saved = projectRepo.save(p);
 
         // Attach matching Suggested/Applicant talent so View Applications is immediately actionable
@@ -719,17 +844,68 @@ public class RecruiterDashboardController {
         m.put("id", p.getId());
         m.put("projectTitle", p.getProjectTitle());
         m.put("projectType", p.getProjectType());
+        m.put("productionHouseName", p.getProductionHouseName());
+        m.put("castingCompanyName", p.getCastingCompanyName() != null ? p.getCastingCompanyName() : company.getCompanyName());
+        m.put("projectDetails", p.getProjectDetails());
+        m.put("projectLanguage", p.getProjectLanguage());
+        m.put("projectStage", p.getProjectStage());
+
         m.put("targetCategory", p.getTargetCategory());
         m.put("targetGender", p.getTargetGender());
         m.put("ageMin", p.getAgeMin());
         m.put("ageMax", p.getAgeMax());
-        m.put("projectDetails", p.getProjectDetails());
-        m.put("tags", p.getTags());
-        m.put("durationType", p.getDurationType());
-        m.put("budget", p.getBudget());
+        m.put("heightRequirement", p.getHeightRequirement());
+        m.put("preferredAppearance", p.getPreferredAppearance());
+        m.put("experienceLevel", p.getExperienceLevel());
+        m.put("artistsRequiredCount", p.getArtistsRequiredCount());
+        m.put("roleDescription", p.getRoleDescription());
+        m.put("characterName", p.getCharacterName());
+
         m.put("location", p.getLocation());
-        m.put("onlineAuditionEnabled", p.isOnlineAuditionEnabled());
+        m.put("auditionLocation", p.getAuditionLocation());
+        m.put("auditionDate", p.getAuditionDate());
+        m.put("auditionType", p.getAuditionType());
+        m.put("shootingStartDate", p.getShootingStartDate());
+        m.put("shootingEndDate", p.getShootingEndDate());
+        m.put("shootingDuration", p.getShootingDuration());
+        m.put("availabilityRequirements", p.getAvailabilityRequirements());
+        m.put("durationType", p.getDurationType());
+
+        m.put("paymentType", p.getPaymentType());
+        m.put("budget", p.getBudget());
+        m.put("paymentBasis", p.getPaymentBasis());
+        m.put("accommodationProvided", p.getAccommodationProvided());
+        m.put("foodProvided", p.getFoodProvided());
+        m.put("travelExpensesCovered", p.getTravelExpensesCovered());
+
+        m.put("auditionProcess", p.getAuditionProcess());
+        m.put("auditionInstructions", p.getAuditionInstructions());
+        m.put("selfIntroVideoRequired", p.getSelfIntroVideoRequired());
+        m.put("portfolioRequired", p.getPortfolioRequired());
         m.put("auditionScript", p.getAuditionScript());
+        m.put("lastDateToApply", p.getLastDateToApply());
+        m.put("onlineAuditionEnabled", p.isOnlineAuditionEnabled());
+
+        m.put("requiredPhotographs", p.getRequiredPhotographs());
+        m.put("introVideoRequirement", p.getIntroVideoRequirement());
+        m.put("actingPortfolioRequirement", p.getActingPortfolioRequirement());
+        m.put("previousWorkLinksReq", p.getPreviousWorkLinksReq());
+        m.put("applicantContactReq", p.getApplicantContactReq());
+        m.put("additionalDocumentsReq", p.getAdditionalDocumentsReq());
+
+        m.put("castingDirectorName", p.getCastingDirectorName());
+        m.put("contactEmail", p.getContactEmail());
+        m.put("contactNumber", p.getContactNumber());
+        m.put("whatsappNumber", p.getWhatsappNumber());
+        m.put("websiteOrSocialLinks", p.getWebsiteOrSocialLinks());
+
+        m.put("projectPosterPath", p.getProjectPosterPath());
+        m.put("referenceImagePathsJson", p.getReferenceImagePathsJson());
+        m.put("characterLookPathsJson", p.getCharacterLookPathsJson());
+        m.put("auditionScriptPdfPath", p.getAuditionScriptPdfPath());
+        m.put("projectPromotionalImagePath", p.getProjectPromotionalImagePath());
+
+        m.put("tags", p.getTags());
         m.put("promoted", p.isPromoted());
         m.put("status", p.getStatus());
         m.put("postedDate", p.getPostedDate());
@@ -739,6 +915,29 @@ public class RecruiterDashboardController {
         m.put("companyName", company.getCompanyName());
         m.put("companyVerified", company.isVerifiedBadge());
         return m;
+    }
+
+    private String trimOrNull(String val) {
+        return (val == null || val.isBlank()) ? null : val.trim();
+    }
+
+    private LocalDate parseDateOrNull(String val) {
+        if (val == null || val.isBlank()) return null;
+        return LocalDate.parse(val.trim());
+    }
+
+    private String storeMultiPathsJson(MultipartFile[] files, String subFolder) {
+        if (files == null || files.length == 0) return null;
+        List<String> paths = new ArrayList<>();
+        for (MultipartFile f : files) {
+            if (f != null && !f.isEmpty()) {
+                paths.add(fileStorage.store(f, subFolder));
+            }
+        }
+        if (paths.isEmpty()) return null;
+        return "[" + paths.stream()
+                .map(s -> "\"" + s.replace("\"", "\\\"") + "\"")
+                .collect(Collectors.joining(",")) + "]";
     }
 
     private Map<String, Object> toArtistView(ArtistProfile a, boolean contactUnlocked, boolean saved) {

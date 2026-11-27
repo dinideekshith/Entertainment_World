@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Panel — Entertainment World</title>
+    <link rel="stylesheet" href="/css/professional-dashboard.css">
+</head>
+<body data-role="ADMIN" data-login="/admin-login.html">
+    <!-- Top Header -->
+    <header class="ew-topbar">
+        <div class="ew-topbar-left">
+            <button type="button" id="ew-menu-toggle" class="ew-menu-toggle" aria-label="Toggle navigation">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <div class="ew-brand-lockup">
+                <span class="ew-brand-logo" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#fbbf24">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                </span>
+                <div class="ew-brand-stack">
+                    <span class="ew-brand">Entertainment World</span>
+                    <span class="ew-brand-sub">SUPER ADMIN DASHBOARD</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="ew-topbar-nav" aria-label="Admin quick navigation">
+            <button type="button" class="ew-topbar-link" data-goto-view="overview">Verifications</button>
+            <button type="button" class="ew-topbar-link" data-goto-view="users">Users</button>
+            <button type="button" class="ew-topbar-link" data-goto-view="plans">Revenue</button>
+            <button type="button" class="ew-topbar-link" data-goto-view="complaints">Complaints</button>
+            <button type="button" class="ew-topbar-link" data-goto-view="announcements">Announcements</button>
+        </nav>
+
+        <div class="ew-topbar-right">
+            <button type="button" id="user-menu-btn" class="ew-avatar-btn" aria-label="Admin menu">
+                <span class="ew-avatar-fallback">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </span>
+                <span id="topbar-admin-name" class="ew-avatar-name">Super Admin</span>
+            </button>
+
+            <button type="button" class="ew-topbar-signout" onclick="document.getElementById('signout-btn')?.click()">Sign Out</button>
+
+            <div id="user-menu-popover" class="ew-popover" hidden>
+                <div class="ew-user-menu-head">
+                    <strong id="user-name">System Admin</strong>
+                    <span id="user-email"></span>
+                </div>
+                <div class="ew-user-menu-actions">
+                    <button type="button" class="ew-menu-action" data-goto-view="overview">Dashboard Overview</button>
+                    <button type="button" class="ew-menu-action" data-goto-view="settings">Settings &amp; Security</button>
+                    <button type="button" id="signout-btn" class="ew-menu-action danger">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="ew-shell">
+        <div id="ew-sidebar-backdrop" class="ew-sidebar-backdrop"></div>
+
+        <!-- Main Workspace (Left / Center Column) -->
+        <main class="ew-main">
+            <!-- 1. Dashboard Overview & Document Verification Queue -->
+            <section class="ew-view active" data-view-panel="overview">
+                <div class="ew-pass-banner">
+                    <span class="ew-pass-pill">
+                        <span class="ew-plan-dot"></span>
+                        <span>Super Admin Governance • Active</span>
+                    </span>
+                    <span class="ew-pass-meta">Core Platform Control • Entertainment World</span>
+                </div>
+
+                <div class="ew-hero-card">
+                    <div class="ew-hero-left">
+                        <div class="ew-hero-avatar-box">
+                            <span class="ew-hero-avatar-fallback">SA</span>
+                        </div>
+                        <div class="ew-hero-info">
+                            <div class="ew-hero-title-row">
+                                <h1>Super Admin Control</h1>
+                                <span class="ew-verified-tick" title="Verified Administrator">✓</span>
+                                <span class="ew-verified-pill">System Governance</span>
+                            </div>
+                            <p class="ew-hero-sub">Live document verification queue &amp; platform operations</p>
+                            <div class="ew-hero-stats">
+                                <span><strong id="admin-kpi-pending">0</strong> Pending Verifications</span>
+                                <span><strong id="admin-kpi-approved">0</strong> Approved Partners</span>
+                                <span><strong>₹1.42L</strong> Monthly Revenue</span>
+                                <span><strong id="admin-kpi-complaints">0</strong> Open Complaints</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ew-hero-actions">
+                        <button type="button" class="ew-btn ew-btn-outline ew-btn-sm" data-goto-view="settings">SETTINGS &amp; SECURITY</button>
+                        <button type="button" id="refresh-verifications" class="ew-btn ew-btn-primary ew-btn-sm">Refresh Queue</button>
+                    </div>
+                </div>
+
+                <section class="ew-section">
+                    <div class="ew-section-head">
+                        <h2 class="ew-section-title">Document Verification Queue</h2>
+                        <div class="ew-chip-row" style="margin-bottom: 0;">
+                            <button type="button" class="ew-chip active" data-verif-filter="ALL">All</button>
+                            <button type="button" class="ew-chip" data-verif-filter="PENDING">Pending</button>
+                            <button type="button" class="ew-chip" data-verif-filter="APPROVED">Approved</button>
+                            <button type="button" class="ew-chip" data-verif-filter="REJECTED">Rejected</button>
+                        </div>
+                    </div>
+                    <div id="verification-list" class="verification-list"></div>
+                </section>
+            </section>
+
+            <!-- 2. Users & Partners -->
+            <section class="ew-view" data-view-panel="users">
+                <div class="ew-page-header">
+                    <div>
+                        <h1>Users &amp; Partners</h1>
+                        <p class="ew-page-subtitle">Manage Professionals, Casting, Vendors, Brands, and Event Management accounts</p>
+                    </div>
+                </div>
+                <div class="ew-toolbar">
+                    <input id="admin-user-search" class="ew-input ew-search-input" type="search" placeholder="Search by name or email...">
+                    <select id="admin-user-role-filter" class="ew-select">
+                        <option value="ALL">All Roles</option>
+                        <option value="ACTOR">Professionals</option>
+                        <option value="CASTING">Casting</option>
+                        <option value="VENDOR">Vendors</option>
+                        <option value="BRAND">Brands</option>
+                        <option value="EVENT_MANAGEMENT">Event Management</option>
+                    </select>
+                </div>
+                <div id="admin-users-list" class="ew-card-stack"></div>
+            </section>
+
+            <!-- 3. Plans & Revenue -->
+            <section class="ew-view" data-view-panel="plans">
+                <div class="ew-page-header">
+                    <div>
+                        <h1>Plans &amp; Revenue</h1>
+                        <p class="ew-page-subtitle">Subscription plans, revenue across all login portals, and complete payment history</p>
+                    </div>
+                    <span id="admin-total-revenue-pill" class="ew-meta-note">₹4,75,200 / month</span>
+                </div>
+
+                <div id="admin-revenue-summary" class="ew-inv-summary-strip"></div>
+
+                <div class="ew-section" style="margin-top: 20px;">
+                    <div class="ew-section-head">
+                        <h2 class="ew-section-title">All Login Portals — Plans &amp; Revenue</h2>
+                        <span class="ew-app-meta">5 Active Portals</span>
+                    </div>
+                    <div id="admin-portal-revenue-grid" class="ew-plans-grid"></div>
+                </div>
+
+                <div class="ew-section" style="margin-top: 24px;">
+                    <div class="ew-section-head">
+                        <h2 class="ew-section-title">Payment History &amp; Settlements</h2>
+                        <span id="admin-payments-count" class="ew-app-meta"></span>
+                    </div>
+                    <div class="ew-toolbar">
+                        <input id="admin-payment-search" class="ew-input ew-search-input" type="search" placeholder="Search by subscriber name, organization, or invoice...">
+                        <select id="admin-payment-portal-filter" class="ew-select">
+                            <option value="ALL">All Portals</option>
+                            <option value="Professionals">Professionals</option>
+                            <option value="Casting">Casting</option>
+                            <option value="Events">Events</option>
+                            <option value="Brands">Brands</option>
+                            <option value="Vendors">Vendors</option>
+                        </select>
+                        <select id="admin-payment-plan-filter" class="ew-select">
+                            <option value="ALL">All Plans</option>
+                            <option value="Pro">Pro / Enterprise</option>
+                            <option value="Premium">Premium / Growth</option>
+                            <option value="Standard">Standard / Verified</option>
+                        </select>
+                        <select id="admin-payment-status-filter" class="ew-select">
+                            <option value="ALL">All Statuses</option>
+                            <option value="Settled">Settled</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Failed">Failed</option>
+                        </select>
+                    </div>
+                    <div class="ew-table-wrap">
+                        <table class="ew-compare-table">
+                            <thead>
+                                <tr>
+                                    <th>Subscriber / Organization</th>
+                                    <th>Portal</th>
+                                    <th>Plan</th>
+                                    <th>Amount</th>
+                                    <th>Date &amp; Invoice</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-payments-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Complaints & Support -->
+            <section class="ew-view" data-view-panel="complaints">
+                <div class="ew-page-header">
+                    <div>
+                        <h1>Complaints &amp; Support</h1>
+                        <p class="ew-page-subtitle">Review and resolve complaints raised by users across the platform</p>
+                    </div>
+                </div>
+                <div id="admin-complaints-list" class="ew-card-stack"></div>
+            </section>
+
+            <!-- 5. Announcements -->
+            <section class="ew-view" data-view-panel="announcements">
+                <div class="ew-page-header">
+                    <div>
+                        <h1>Announcements</h1>
+                        <p class="ew-page-subtitle">Send platform-wide updates to professionals and partner organizations</p>
+                    </div>
+                </div>
+                <div class="ew-panel">
+                    <form id="admin-broadcast-form" class="ew-form-grid">
+                        <div class="ew-field">
+                            <label for="broadcast-audience">Target Audience</label>
+                            <select id="broadcast-audience" class="ew-select">
+                                <option value="All Users">All Users</option>
+                                <option value="Professionals (Actors)">Professionals (Actors)</option>
+                                <option value="Casting & Production">Casting &amp; Production</option>
+                                <option value="Brands & Event Management">Brands &amp; Event Management</option>
+                            </select>
+                        </div>
+                        <div class="ew-field">
+                            <label for="broadcast-title">Announcement Title</label>
+                            <input id="broadcast-title" class="ew-input" type="text" placeholder="e.g., Monsoon Casting Drive Live" required>
+                        </div>
+                        <div class="ew-field full">
+                            <label for="broadcast-message">Message</label>
+                            <textarea id="broadcast-message" class="ew-textarea" rows="3" placeholder="Write announcement details..." required></textarea>
+                        </div>
+                        <div class="ew-field full" style="flex-direction: row; justify-content: flex-end;">
+                            <button type="submit" class="ew-btn ew-btn-primary">Send Announcement</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="admin-broadcast-history" class="ew-card-stack" style="margin-top: 16px;"></div>
+            </section>
+
+            <!-- 6. Settings & Security -->
+            <section class="ew-view" data-view-panel="settings">
+                <div class="ew-page-header">
+                    <div>
+                        <h1>Settings &amp; Security</h1>
+                        <p class="ew-page-subtitle">Manage document-approval gates, notifications, and maintenance mode</p>
+                    </div>
+                </div>
+                <div class="ew-panel">
+                    <div class="ew-toggle-row">
+                        <div>
+                            <strong>Document Verification Login Gate</strong>
+                            <div class="ew-app-meta">Block Vendors, Casting, Event Management, and Brands until approved</div>
+                        </div>
+                        <input id="sec-doc-gate" type="checkbox" checked>
+                    </div>
+                    <div class="ew-toggle-row">
+                        <div>
+                            <strong>Email Notification Dispatch</strong>
+                            <div class="ew-app-meta">Send automated approval/rejection emails via SMTP</div>
+                        </div>
+                        <input id="cfg-email-dispatch" type="checkbox" checked>
+                    </div>
+                    <div class="ew-toggle-row">
+                        <div>
+                            <strong>Maintenance Mode Banner</strong>
+                            <div class="ew-app-meta">Display scheduled maintenance notice across all login portals</div>
+                        </div>
+                        <input id="cfg-maintenance" type="checkbox">
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Right Floating Navigation Card (Matches Professional Dashboard) -->
+        <aside id="ew-sidebar" class="ew-sidebar" aria-label="Super Admin navigation">
+            <h2 class="ew-sidebar-title">SUPER ADMIN PANEL</h2>
+            <nav class="ew-nav">
+                <button type="button" class="ew-nav-item active" data-view="overview">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                    <span>Dashboard Overview</span>
+                    <span id="pending-verif-badge" class="ew-nav-badge">0</span>
+                </button>
+                <button type="button" class="ew-nav-item" data-view="users">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <span>Users &amp; Partners</span>
+                </button>
+                <button type="button" class="ew-nav-item" data-view="plans">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                    </svg>
+                    <span>Plans &amp; Revenue</span>
+                </button>
+                <button type="button" class="ew-nav-item" data-view="complaints">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span>Complaints &amp; Support</span>
+                    <span id="admin-complaints-badge" class="ew-nav-badge">0</span>
+                </button>
+                <button type="button" class="ew-nav-item" data-view="announcements">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span>Announcements</span>
+                </button>
+                <button type="button" class="ew-nav-item" data-view="settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Settings &amp; Security</span>
+                </button>
+            </nav>
+
+            <div class="ew-sidebar-footer">
+                <span class="ew-category-pill">Super Admin</span>
+                <div>Core Platform Control</div>
+            </div>
+        </aside>
+    </div>
+
+    <div id="ew-toast" class="ew-toast" hidden></div>
+
+    <script src="/js/dashboard.js"></script>
+    <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>
